@@ -1,0 +1,8 @@
+.DS_Store
+.snakemake/
+./SRC/FIRE-1.1a/
+./SRC/meme/
+./SRC/meme_4.9.1/
+./OUTPUT/
+./RESOURCES/tmp/
+./LOG/
