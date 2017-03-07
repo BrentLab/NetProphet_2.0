@@ -18,10 +18,12 @@ and these mod-els can be used to further refine the network.
 
 ###INSTALLATION INSTRUCTIONS
 1. Unpack NetProphet 2.0
+	
 	```
 	tar -zxvf NetProphet_2.0.tar.gz;
 	```
 2. Configure NetProphet 2.0 directory
+	
 	```
 	export NETPROPHET2_DIR=<path_to_NetProphet_2.0>;
 	export PATH=${NETPROPHET2_DIR}:$PATH;
