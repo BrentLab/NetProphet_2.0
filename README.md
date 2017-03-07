@@ -21,11 +21,13 @@ and these mod-els can be used to further refine the network.
 ```
 tar -zxvf NetProphet_2.0.tar.gz;
 ```
+
 2. Configure NetProphet 2.0 directory
 ```
 export NETPROPHET2_DIR=<path_to_NetProphet_2.0>;
 export PATH=${NETPROPHET2_DIR}:$PATH;
 ```
+
 * Install Snakemake (workflow management sytem)
 ```
 cd ${NETPROPHET2_DIR}/SRC/;
@@ -71,15 +73,15 @@ sbatch NetProphet2
 ```
 
 ###DESCRIPTION OF RESOURCE FILES
-* `data.expr`
+* `FILENAME_EXPRESSION_DATA`
 A matrix of the expression values of all genes measured. Rows represent 
 genes, columns represent samples/conditions, i.e. the matrix dimension is 
 # of genes x # of samples.
-* `data.fc`
+* `FILENAME_FOLDCHANGE_DATA`
 A matrix of fold change form of the expression values, in which the fold 
 change of each gene in each sample is based on the mean expression values of 
 that gene in the control samples. The matrix dimension is the same as data.expr.
-* `signed.de.adj`
+* `FILENAME_DE_ADJMTR`
 A adjacency matrix of the interactions between regualtors and target genes, 
 which are calculated via differential expression analysis. The rows represent 
 regulators/TFs and the columns represent genes, i.e. the matrix dimension is 
@@ -88,26 +90,26 @@ regulator i (Ri) and target gene j (Tj), set entry Mij to the signed logged
 differential expression significance of Tj when Ri is perturbed. If Ri has not 
 been perturbed, then set Mij = 0 for all j. See CALCULATING THE DIFFERENTIAL 
 EXPRESSION COMPONENT for more details.
-* `genes`
+* `FILENAME_GENES`
 A list of gene names. Capitalized systematic names are recommended.
-* `regulators`
+* `FILENAME_REGULATORS`
 A list of gene names that encode transcription factors (TFs). These regulators 
 must be included in the list of gene names. The regulator names should have 
 the same naming scheme as the gene names. 
-* `conditions`
+* `FILENAME_SAMPLE_CONDITIONS`
 A list of samples/conditions. If a gene was perturbed in a condition, set 
 the condition name as the gene name; otherwise, set as any identifier without 
 space delimiter.
-* `promoter.fasta`
+* `FILENAME_PROMOTERS`
 The promoter sequences of the target genes in Fasta format. The header of each 
 promter is the gene name only.
-* `DBD_PIDS/`
+* `DIR_DBD_PID`
 A directory of the percent identities (PIDs) between the DNA binding domains 
 (DBDs). Each file is titled as the name of the regulator associated with a DBD. 
 There are two columns in the file: each entry of the first column is the 
 regulator name associated with other DBDs, and the entry of the second column 
 is the corresponding PID calculated beforehand. See CALCULATING THE PERCENT 
-IDENTITIES BETWEEN THE DBDS for more details.  
+IDENTITIES BETWEEN THE DBDS for more details.
 
 ###DESCRIPTION OF OUTPUT FILE
 * `netprophet2_network.adjmtr`
