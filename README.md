@@ -72,14 +72,19 @@ sbatch NetProphet2
 
 ###DESCRIPTION OF RESOURCE FILES
 * data.expr
+
 A matrix of the expression values of all genes measured. Rows represent 
 genes, columns represent samples/conditions, i.e. the matrix dimension is 
 # of genes x # of samples.
+
 * data.fc 
+
 A matrix of fold change form of the expression values, in which the fold 
 change of each gene in each sample is based on the mean expression values of 
 that gene in the control samples. The matrix dimension is the same as data.expr.
+
 * signed.de.adj
+
 A adjacency matrix of the interactions between regualtors and target genes, 
 which are calculated via differential expression analysis. The rows represent 
 regulators/TFs and the columns represent genes, i.e. the matrix dimension is 
@@ -88,20 +93,30 @@ regulator i (Ri) and target gene j (Tj), set entry Mij to the signed logged
 differential expression significance of Tj when Ri is perturbed. If Ri has not 
 been perturbed, then set Mij = 0 for all j. See CALCULATING THE DIFFERENTIAL 
 EXPRESSION COMPONENT for more details.
+
 * genes
+
 A list of gene names. Capitalized systematic names are recommended.
+
 * regulators
+
 A list of gene names that encode transcription factors (TFs). These regulators 
 must be included in the list of gene names. The regulator names should have 
 the same naming scheme as the gene names. 
+
 * conditions
+
 A list of samples/conditions. If a gene was perturbed in a condition, set 
 the condition name as the gene name; otherwise, set as any identifier without 
 space delimiter.
+
 * promoter.fasta
+
 The promoter sequences of the target genes in Fasta format. The header of each 
 promter is the gene name only.
+
 * DBD_PIDS/
+
 A directory of the percent identities (PIDs) between the DNA binding domains 
 (DBDs). Each file is titled as the name of the regulator associated with a DBD. 
 There are two columns in the file: each entry of the first column is the 
@@ -111,6 +126,7 @@ IDENTITIES BETWEEN THE DBDS for more details.
 
 ###DESCRIPTION OF OUTPUT FILE
 * netprophet2_network.adjmtr
+
 A adjacency matrix of the final scores predicted by NetProphet 2.0. The rows 
 represent regulators/TFs and the columns represent genes, i.e. the matrix dimension 
 is # of regulators x # of target genes. Each entry Mij of matrix M is the score of 
@@ -119,6 +135,7 @@ with higher scores are more likely to be direct regulatory interactions.
 
 ###CALCULATING THE DIFFERENTIAL EXPRESSION COMPONENT
 * Microarray expression profiling data
+
 For each TF perturbation, for each gene in the perturbation condition, we recommend 
 that you use LIMMA to calculate the log odds that the gene is differentially 
 expressed in the perturbation condition compared to the wild type (WT) condition. 
@@ -128,6 +145,7 @@ and TF i as follows.
 	Dij =  Li(j)*sgn(Yi(j) when Li(j) > 0 and Dij =  0 when Li(j) <= 0
 
 * RNA-Seq expression profiling data
+
 For each TF perturbation, we recommend that you use Cuffdiff to calculate the 
 significance of differential expression (i.e. the uncorrected p-value and the 
 FDR-adjusted p-value) of each gene in the perturbation condition compared to the 
@@ -137,7 +155,7 @@ p-value Fi(j), and the log2-fold change Yi(j) of gene j and TF i as follows.
 	Dij =  -ln(Pi(j))*sgn(Yi(j) when Fi(j) <= 0.05 and Dij =  0 when Fi(j) >= 0.05
 
 ###CALCULATING THE PERCENT IDENTITIES BETWEEN THE DBDS
-See supplemental package at http://mblab.wustl.edu/ for details.
+See supplemental package at http://mblab.wustl.edu/software.html for details.
 
 ###REFERENCES
 Haynes, B.C., et al. Mapping functional transcription factor networks from gene expression data. Genome research 2013;23(8):1319-1328.
