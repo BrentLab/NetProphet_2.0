@@ -1,5 +1,5 @@
 #NETPROPHET 2.0
-------------------------------------------------------
+	
 	NetProphet 2.0 is a second-generation “data light” TF-network mapping algorithm. It 
 	requires only data that can be generated from low-cost, reliable, and easily scalable 
 	experimental methods. NetProphet 2.0 relies on three fundamental ideas. First, 
@@ -10,58 +10,66 @@
 	each TF’s DNA binding prefer-ences from the promoter sequences of its putative targets 
 	and these mod-els can be used to further refine the network.
 
-SYSTEM REQUIREMENTS
-------------------------------------------------------
+###SYSTEM REQUIREMENTS
 	* Slurm workload manager (tested on v15.08.7)
 	* Open MPI (tested on v1.8.8)
 	* R (>= v3.2, tested on v3.2.1)
 	* Python (>= v2.7, tested on v2.7.10)
 	* Python (>= v3.4, tested on 3.4.3+)
 
-INSTALLATION INSTRUCTIONS
-------------------------------------------------------
+###INSTALLATION INSTRUCTIONS
 	1. Unpack NetProphet 2.0
-		tar -zxvf NetProphet_2.0.tar.gz;
+	```
+	tar -zxvf NetProphet_2.0.tar.gz;
+	```
 	2. Configure NetProphet 2.0 directory
-		export NETPROPHET2_DIR=<path_to_NetProphet_2.0>;
-		export PATH=${NETPROPHET2_DIR}:$PATH;
+	```
+	export NETPROPHET2_DIR=<path_to_NetProphet_2.0>;
+	export PATH=${NETPROPHET2_DIR}:$PATH;
+	```
 	3. Install Snakemake (workflow management sytem)
-		cd ${NETPROPHET2_DIR}/SRC/;
-		tar -zxvf snakemake-3.8.2.tar.gz;
-		cd snakemake-3.8.2/;
-		python3 setup.py build;
-		python3 setup.py install --user;
-		export PATH=$HOME/.local/bin:$PATH;	
+	```
+	cd ${NETPROPHET2_DIR}/SRC/;
+	tar -zxvf snakemake-3.8.2.tar.gz;
+	cd snakemake-3.8.2/;
+	python3 setup.py build;
+	python3 setup.py install --user;
+	export PATH=$HOME/.local/bin:$PATH;	
+	```
 	4. Install FIRE program
-		cd ${NETPROPHET2_DIR}/SRC/;
-		unzip -q FIRE_1.1a.zip;
-		cd FIRE_1.1a/;
-		chmod 775 configure;
-		make;
-		export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/;
-		export PATH=${FIREDIR}:$PATH;
+	```
+	cd ${NETPROPHET2_DIR}/SRC/;
+	unzip -q FIRE_1.1a.zip;
+	cd FIRE_1.1a/;
+	chmod 775 configure;
+	make;
+	export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/;
+	export PATH=${FIREDIR}:$PATH;
+	```
 	5. Install MEME suite
-		cd ${NETPROPHET2_DIR}/SRC/;
-		tar -zxvf meme_4.9.1.tar.gz;
-		cd meme_4.9.1/;
-		./configure --prefix=${NETPROPHET2_DIR}/SRC/meme \
-		--with-url="http://meme.nbcr.net/meme";
-		make;
-		make test;
-		make install;
-		export PATH=${NETPROPHET2_DIR}/SRC/meme/bin/:$PATH;
+	```	
+	cd ${NETPROPHET2_DIR}/SRC/;
+	tar -zxvf meme_4.9.1.tar.gz;
+	cd meme_4.9.1/;
+	./configure --prefix=${NETPROPHET2_DIR}/SRC/meme \
+	--with-url="http://meme.nbcr.net/meme";
+	make;
+	make test;
+	make install;
+	export PATH=${NETPROPHET2_DIR}/SRC/meme/bin/:$PATH;
+	```
 	6. Install R LARS and package
-		cd ${NETPROPHET2_DIR}/SRC/NetProphet1;
-		R CMD INSTALL lars_0.9-8.tar.gz;
-		R --no-init-file CMD INSTALL Rmpi_0.5-9.tar.gz;
-		cd ${NETPROPHET2_DIR};
-
-EXAMPLE USAGE
-------------------------------------------------------
+	```
+	cd ${NETPROPHET2_DIR}/SRC/NetProphet1;
+	R CMD INSTALL lars_0.9-8.tar.gz;
+	R --no-init-file CMD INSTALL Rmpi_0.5-9.tar.gz;
+	cd ${NETPROPHET2_DIR};
+	```
+	
+###EXAMPLE USAGE
 	* sbatch NetProphet2
 
-DESCRIPTION OF RESOURCE FILES
-------------------------------------------------------
+###DESCRIPTION OF RESOURCE FILES
 	* data.expr
 		- A matrix of the expression values of all genes measured. Rows represent 
 		genes, columns represent samples/conditions, i.e. the matrix dimension is 
@@ -100,8 +108,7 @@ DESCRIPTION OF RESOURCE FILES
 		is the corresponding PID calculated beforehand. See CALCULATING THE PERCENT 
 		IDENTITIES BETWEEN THE DBDS for more details.  
 
-DESCRIPTION OF OUTPUT FILE
-------------------------------------------------------
+###DESCRIPTION OF OUTPUT FILE
 	* netprophet2_network.adjmtr
 		- A adjacency matrix of the final scores predicted by NetProphet 2.0. The rows 
 		represent regulators/TFs and the columns represent genes, i.e. the matrix dimension 
@@ -109,8 +116,7 @@ DESCRIPTION OF OUTPUT FILE
 		the interaction between regulator Ri and target gene Tj. In this matrix, interactions 
 		with higher scores are more likely to be direct regulatory interactions.
 
-CALCULATING THE DIFFERENTIAL EXPRESSION COMPONENT
-------------------------------------------------------
+###CALCULATING THE DIFFERENTIAL EXPRESSION COMPONENT
 	* Microarray expression profiling data
 		- For each TF perturbation, for each gene in the perturbation condition, we recommend 
 		that you use LIMMA to calculate the log odds that the gene is differentially 
@@ -129,12 +135,10 @@ CALCULATING THE DIFFERENTIAL EXPRESSION COMPONENT
 		p-value Fi(j), and the log2-fold change Yi(j) of gene j and TF i as follows.
 	Dij =  -ln(Pi(j))*sgn(Yi(j) when Fi(j) <= 0.05 and Dij =  0 when Fi(j) >= 0.05
 
-CALCULATING THE PERCENT IDENTITIES BETWEEN THE DBDS
-------------------------------------------------------
+###CALCULATING THE PERCENT IDENTITIES BETWEEN THE DBDS
 	* See supplemental package at http://mblab.wustl.edu/ for details.
 
-REFERENCES
-------------------------------------------------------
+###REFERENCES
 Haynes, B.C., et al. Mapping functional transcription factor networks from gene expression data. Genome research 2013;23(8):1319-1328.
 
 Chipman, H.A., George, E.I. and McCulloch, R.E. BART: Bayesian additive regression trees. 2010:266-298.
