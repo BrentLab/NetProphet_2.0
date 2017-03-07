@@ -81,9 +81,9 @@ and these mod-els can be used to further refine the network.
 
 ###EXAMPLE USAGE
 
-	```
-	sbatch NetProphet2
-	```
+```
+sbatch NetProphet2
+```
 
 ###DESCRIPTION OF RESOURCE FILES
 
@@ -154,25 +154,25 @@ and these mod-els can be used to further refine the network.
 
 #####Microarray expression profiling data
 
-	For each TF perturbation, for each gene in the perturbation condition, we recommend 
-	that you use LIMMA to calculate the log odds that the gene is differentially 
-	expressed in the perturbation condition compared to the wild type (WT) condition. 
-	The differential expression component is a signed confidence score Dij, which is 
-	calculated using the log odds score Li(j) and the log2-fold change Yi(j) of gene j 
-	and TF i as follows.
+For each TF perturbation, for each gene in the perturbation condition, we recommend 
+that you use LIMMA to calculate the log odds that the gene is differentially 
+expressed in the perturbation condition compared to the wild type (WT) condition. 
+The differential expression component is a signed confidence score Dij, which is 
+calculated using the log odds score Li(j) and the log2-fold change Yi(j) of gene j 
+and TF i as follows.
 
-	Dij =  Li(j)*sgn(Yi(j) when Li(j) > 0 and Dij =  0 when Li(j) <= 0
+Dij =  Li(j)*sgn(Yi(j) when Li(j) > 0 and Dij =  0 when Li(j) <= 0
 
 #####RNA-Seq expression profiling data
 
-	For each TF perturbation, we recommend that you use Cuffdiff to calculate the 
-	significance of differential expression (i.e. the uncorrected p-value and the 
-	FDR-adjusted p-value) of each gene in the perturbation condition compared to the 
-	WT condition. The differential expression component is a signed confidence score 
-	Dij, which is calculated using the uncorrected p-value Pi(j), the FDR-adjusted 
-	p-value Fi(j), and the log2-fold change Yi(j) of gene j and TF i as follows.
+For each TF perturbation, we recommend that you use Cuffdiff to calculate the 
+significance of differential expression (i.e. the uncorrected p-value and the 
+FDR-adjusted p-value) of each gene in the perturbation condition compared to the 
+WT condition. The differential expression component is a signed confidence score 
+Dij, which is calculated using the uncorrected p-value Pi(j), the FDR-adjusted 
+p-value Fi(j), and the log2-fold change Yi(j) of gene j and TF i as follows.
 	
-	Dij =  -ln(Pi(j))*sgn(Yi(j) when Fi(j) <= 0.05 and Dij =  0 when Fi(j) >= 0.05
+Dij =  -ln(Pi(j))*sgn(Yi(j) when Fi(j) <= 0.05 and Dij =  0 when Fi(j) >= 0.05
 
 ###CALCULATING THE PERCENT IDENTITIES BETWEEN THE DBDS
 
