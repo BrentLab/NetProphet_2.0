@@ -23,54 +23,44 @@ and these mod-els can be used to further refine the network.
 1. Unpack NetProphet 2.0
 	
 	```
-	tar -zxvf NetProphet_2.0.tar.gz;
+	tar -zxvf NetProphet_2.0.tar.gz
+	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
 	```
 
-2. Configure NetProphet 2.0 directory
-	
-	```
-	export NETPROPHET2_DIR=<path_to_NetProphet_2.0>;
-	export PATH=${NETPROPHET2_DIR}:$PATH;
-	```
-
-3. Install Snakemake (workflow management sytem)
+2. Install Snakemake (workflow management sytem)
 
 	```
-	cd ${NETPROPHET2_DIR}/SRC/;
-	tar -zxvf snakemake-3.8.2.tar.gz;
-	cd snakemake-3.8.2/;
-	python3 setup.py build;
-	python3 setup.py install --user;
-	export PATH=$HOME/.local/bin:$PATH;	
+	cd ${NETPROPHET2_DIR}/SRC/
+	tar -zxvf snakemake-3.8.2.tar.gz
+	cd snakemake-3.8.2/
+	python3 setup.py build
+	python3 setup.py install --user
 	```
 
-4. Install FIRE program
+3. Install FIRE program
 
 	```
-	cd ${NETPROPHET2_DIR}/SRC/;
-	unzip -q FIRE_1.1a.zip;
-	cd FIRE_1.1a/;
-	chmod 775 configure;
-	make;
-	export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/;
-	export PATH=${FIREDIR}:$PATH;
+	cd ${NETPROPHET2_DIR}/SRC/
+	unzip -q FIRE_1.1a.zip
+	cd FIRE_1.1a/
+	chmod 775 configure
+	make
 	```
 
-5. Install MEME suite
+4. Install MEME suite
 
 	```	
-	cd ${NETPROPHET2_DIR}/SRC/;
-	tar -zxvf meme_4.9.1.tar.gz;
-	cd meme_4.9.1/;
+	cd ${NETPROPHET2_DIR}/SRC/
+	tar -zxvf meme_4.9.1.tar.gz
+	cd meme_4.9.1/
 	./configure --prefix=${NETPROPHET2_DIR}/SRC/meme \
-	--with-url="http://meme.nbcr.net/meme";
-	make;
-	make test;
-	make install;
-	export PATH=${NETPROPHET2_DIR}/SRC/meme/bin/:$PATH;
+	--with-url="http://meme.nbcr.net/meme"
+	make
+	make test
+	make install
 	```
 
-6. Install R LARS and package
+5. Install R LARS and package
 
 	```
 	cd ${NETPROPHET2_DIR}/SRC/NetProphet1;
@@ -81,9 +71,41 @@ and these mod-els can be used to further refine the network.
 
 ###EXAMPLE USAGE
 
-```
-sbatch NetProphet2
-```
+1. Set pipeline paths. Execute the following for each NetProphet 2.0 run, or add them to `$HOME/.profile`.
+	
+	```
+	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
+	export PATH=${NETPROPHET2_DIR}:$PATH
+	export PATH=$HOME/.local/bin:$PATH
+	export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/
+	export PATH=${FIREDIR}:$PATH
+	export PATH=${NETPROPHET2_DIR}/SRC/meme/bin/:$PATH
+	```
+
+2. Configure input, parameter and output in `config.json`.
+	
+	```json
+	{
+		"NETPROPHET2_DIR": "/scratch/mblab/yiming.kang/NetProphet_2.0",
+		"FILENAME_EXPRESSION_DATA": "data.expr",
+		"FILENAME_FOLDCHANGE_DATA": "data.fc",
+		"FILENAME_DE_ADJMTR": "signed.de.adj",
+		"FILENAME_GENES": "genes",
+		"FILENAME_REGULATORS": "regulators",
+		"FILENAME_SAMPLE_CONDITIONS": "conditions",
+		"DIR_DBD_PID": "DBD_PIDS",
+		"FILENAME_PROMOTERS": "promoter.fasta",
+		"PROMOTER_LENGTH": 600,
+		"MOTIF_THRESHOLD": 16,
+		"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr"
+	}
+	```
+
+3. Run NetProphet 2.0.
+
+	```
+	sbatch NetProphet2
+	```
 
 ###DESCRIPTION OF RESOURCE FILES
 
