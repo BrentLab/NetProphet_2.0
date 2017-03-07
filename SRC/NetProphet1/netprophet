@@ -1,0 +1,163 @@
+#!/bin/bash
+
+usage() {
+cat << EOF
+	NetProphet:
+		NetProphet program for inferring transcriptional regulatory networks
+
+	Usage:
+		netprophet [options] -t targetExpressionFile -r regulatorExpressionFile -a allowedMatrixFile -p perturbationMatrixFile -d differentialExpressionMatrixFile
+
+	Options:
+		-o				Output directory. (The default output
+						directory is the working directory)
+		-m				Expression profiles produced by microarrays (logged).
+						By default, NetProphet assumes that the  expression data 
+						were produced by RNA-Seq (ie unlogged counts or FPKMs). 
+						This flag effects normalization prior to regression.
+		-l				Perform LASSO on each target gene individually. When this 
+						flag is set, NetProphet will have a parameter that controls
+						the scaling of the L1 penalty relative to the sum of squared
+						errors for each target gene rather than a single global 
+						weighting parameter. Setting this parameter will in general 
+						reduce NetProphet accuracy in exchange for lower CPU and 
+						memory requirements.
+		-c				Parallelize NetProphet. This option requires Grid Engine 
+						and 11 cores, each with at least 20GB of memory. Do not 
+						set this flag unless your system meets this requirement.
+		-g <targetGeneNamesFile>	Given both target and regulator gene names, NetProphet will 
+						output an adjacency list of predicted interactions
+		-f <regulatorGeneNamesFile>	Given both target and regulator gene names, NetProphet will 
+						output an adjacency list of predicted interactions
+		-n				Path and filename of output adjacency matrix.
+EOF
+}
+
+checkFileParam(){
+	if [ -z $2 ]
+	then
+		echo "Option: -${1} is not defined!"
+		usage
+		exit 1
+	fi
+
+	if [ ! -f $2 ]
+	then
+		echo "The argument of option -${1} cannot be found: ${2}"
+		usage
+		exit 1
+	fi
+}
+
+checkDirectoryParam(){
+	if [ -z $2 ]
+	then
+		echo "Option: -${1} is not defined!"
+		usage
+		exit 1
+	fi
+
+	if [ ! -d $2 ]
+	then
+		mkdir $2
+	fi
+}
+
+microarrayFlag=0
+nonGlobalShrinkageFlag=0
+parallelizedFlag=0
+targetExpressionFile=
+regulatorExpressionFile=
+allowedMatrixFile=
+perturbationMatrixFile=
+differentialExpressionMatrixFile=
+targetGeneNamesFile=
+regulatorGeneNamesFile=
+outputDirectory=${PWD}
+currentDirectory=${PWD}
+lassoAdjMtrFileName=lasso.adjmtr
+combinedModelAdjMtrFileName=np.adjmtr
+combinedModelAdjLstFileName=np.adjlst
+
+
+while getopts “:hmlco::g::f::t:r:a:p:d:n:u:” OPTION
+do
+	case $OPTION in
+		h)
+			usage
+      exit 0
+			;;
+		o)
+			outputDirectory=$OPTARG
+			checkDirectoryParam ${OPTION} ${OPTARG}
+			;;
+		m)
+			microarrayFlag=1
+			;;
+		l)
+			nonGlobalShrinkageFlag=1
+			;;
+		c)
+			parallelizedFlag=1
+			;;
+		g)
+			targetGeneNamesFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		f)
+			regulatorGeneNamesFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		t)
+			targetExpressionFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		r)
+			regulatorExpressionFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		a)
+			allowedMatrixFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		p)
+			perturbationMatrixFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		d)
+			differentialExpressionMatrixFile=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		n)
+			combinedModelAdjMtrFileName=$OPTARG
+			;;
+		u)
+			NetProphetDir=$OPTARG
+			;;
+		?)
+			usage
+			exit
+			;;
+	esac
+done
+
+if [[ -z $targetExpressionFile ]] || [[ -z $regulatorExpressionFile ]] || [[ -z $allowedMatrixFile ]] || [[ -z $perturbationMatrixFile ]] || [[ -z $differentialExpressionMatrixFile ]]
+then
+	echo "ERROR: You must specify arguments for options: -t -r -a -p -d"
+	usage
+	exit 1
+fi
+
+export PATH=${NetProphetDir}:$PATH
+
+if [ $parallelizedFlag -eq 1 ]
+then
+	## Running in the parallelized fashion
+	##qsub -e ${outputDirectory} -o ${outputDirectory} -pe mpi 11 -R y -l h_vmem=25G run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
+	sbatch run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
+else
+	## Running in the sequential fashion
+	R --no-save --slave --no-init-file --args ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile} < run_netprophet.r
+fi
+
+cd ${currentDirectory}
