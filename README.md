@@ -10,11 +10,11 @@ each TF’s DNA binding prefer-ences from the promoter sequences of its putative
 and these mod-els can be used to further refine the network.
 
 ###SYSTEM REQUIREMENTS
-* Slurm workload manager (tested on v15.08.7)
-* Open MPI (tested on v1.8.8)
-* R (>= v3.2, tested on v3.2.1)
-* Python (>= v2.7, tested on v2.7.10)
-* Python (>= v3.4, tested on 3.4.3+)
+Slurm workload manager (tested on v15.08.7)
+Open MPI (tested on v1.8.8)
+R (>= v3.2, tested on v3.2.1)
+Python (>= v2.7, tested on v2.7.10)
+Python (>= v3.4, tested on 3.4.3+)
 
 ###INSTALLATION INSTRUCTIONS
 * Unpack NetProphet 2.0
@@ -71,15 +71,15 @@ sbatch NetProphet2
 ```
 
 ###DESCRIPTION OF RESOURCE FILES
-* `data.expr`
+`data.expr`
 A matrix of the expression values of all genes measured. Rows represent 
 genes, columns represent samples/conditions, i.e. the matrix dimension is 
 # of genes x # of samples.
-* `data.fc`
+`data.fc`
 A matrix of fold change form of the expression values, in which the fold 
 change of each gene in each sample is based on the mean expression values of 
 that gene in the control samples. The matrix dimension is the same as data.expr.
-* `signed.de.adj`
+`signed.de.adj`
 A adjacency matrix of the interactions between regualtors and target genes, 
 which are calculated via differential expression analysis. The rows represent 
 regulators/TFs and the columns represent genes, i.e. the matrix dimension is 
@@ -88,20 +88,20 @@ regulator i (Ri) and target gene j (Tj), set entry Mij to the signed logged
 differential expression significance of Tj when Ri is perturbed. If Ri has not 
 been perturbed, then set Mij = 0 for all j. See CALCULATING THE DIFFERENTIAL 
 EXPRESSION COMPONENT for more details.
-* `genes`
+`genes`
 A list of gene names. Capitalized systematic names are recommended.
-* `regulators`
+`regulators`
 A list of gene names that encode transcription factors (TFs). These regulators 
 must be included in the list of gene names. The regulator names should have 
 the same naming scheme as the gene names. 
-* `conditions`
+`conditions`
 A list of samples/conditions. If a gene was perturbed in a condition, set 
 the condition name as the gene name; otherwise, set as any identifier without 
 space delimiter.
-* `promoter.fasta`
+`promoter.fasta`
 The promoter sequences of the target genes in Fasta format. The header of each 
 promter is the gene name only.
-* `DBD_PIDS/`
+`DBD_PIDS/`
 A directory of the percent identities (PIDs) between the DNA binding domains 
 (DBDs). Each file is titled as the name of the regulator associated with a DBD. 
 There are two columns in the file: each entry of the first column is the 
@@ -110,7 +110,7 @@ is the corresponding PID calculated beforehand. See CALCULATING THE PERCENT
 IDENTITIES BETWEEN THE DBDS for more details.  
 
 ###DESCRIPTION OF OUTPUT FILE
-* `netprophet2_network.adjmtr`
+`netprophet2_network.adjmtr`
 A adjacency matrix of the final scores predicted by NetProphet 2.0. The rows 
 represent regulators/TFs and the columns represent genes, i.e. the matrix dimension 
 is # of regulators x # of target genes. Each entry Mij of matrix M is the score of 
