@@ -87,19 +87,19 @@ and these mod-els can be used to further refine the network.
 
 ###DESCRIPTION OF RESOURCE FILES
 
-##### * `FILENAME_EXPRESSION_DATA`
+* `FILENAME_EXPRESSION_DATA`
 
 A matrix of the expression values of all genes measured. Rows represent 
 genes, columns represent samples/conditions, i.e. the matrix dimension is 
 number of genes x number of samples.
 
-##### * `FILENAME_FOLDCHANGE_DATA`
+* `FILENAME_FOLDCHANGE_DATA`
 
 A matrix of fold change form of the expression values, in which the fold 
 change of each gene in each sample is based on the mean expression values of 
 that gene in the control samples. The matrix dimension is the same as data.expr.
 
-##### * `FILENAME_DE_ADJMTR`
+* `FILENAME_DE_ADJMTR`
 
 A adjacency matrix of the interactions between regualtors and target genes, 
 which are calculated via differential expression analysis. The rows represent 
@@ -110,7 +110,7 @@ differential expression significance of Tj when Ri is perturbed. If Ri has not
 been perturbed, then set Mij = 0 for all j. See CALCULATING THE DIFFERENTIAL 
 EXPRESSION COMPONENT for more details.
 
-##### * `FILENAME_GENES`
+* `FILENAME_GENES`
 
 A list of gene names. Capitalized systematic names are recommended.
 * `FILENAME_REGULATORS`
@@ -118,7 +118,7 @@ A list of gene names that encode transcription factors (TFs). These regulators
 must be included in the list of gene names. The regulator names should have 
 the same naming scheme as the gene names. 
 
-##### * `FILENAME_SAMPLE_CONDITIONS`
+* `FILENAME_SAMPLE_CONDITIONS`
 
 A list of samples/conditions. If a gene was perturbed in a condition, set 
 the condition name as the gene name; otherwise, set as any identifier without 
@@ -129,7 +129,7 @@ space delimiter.
 The promoter sequences of the target genes in Fasta format. The header of each 
 promter is the gene name only.
 
-##### * `DIR_DBD_PID`
+* `DIR_DBD_PID`
 
 A directory of the percent identities (PIDs) between the DNA binding domains 
 (DBDs). Each file is titled as the name of the regulator associated with a DBD. 
@@ -140,7 +140,7 @@ IDENTITIES BETWEEN THE DBDS for more details.
 
 ###DESCRIPTION OF OUTPUT FILE
 
-##### * `netprophet2_network.adjmtr`
+* `netprophet2_network.adjmtr`
 
 A adjacency matrix of the final scores predicted by NetProphet 2.0. The rows 
 represent regulators/TFs and the columns represent genes, i.e. the matrix dimension 
