@@ -182,6 +182,10 @@ rule assemble_final_network:
 		-od {input.d} -om npwa_bnwa_mn.adjmtr; \
 		python CODE/weighted_avg_similar_dbds.py -n {input.d}/npwa_bnwa_mn.adjmtr \
 		-r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; \
+		rm LOG/*; \
+		rm -rf OUTPUT/motif_inference; \
+		rm -rf OUTPUT/networks; \
+		rm -rf RESOURCES/tmp; \
 		echo '### COMPLETED! ###';
 		"""
 
