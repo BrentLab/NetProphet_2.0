@@ -74,7 +74,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	export PATH=${NETPROPHET2_DIR}/SRC/meme/bin/:$PATH
 	```
 
-2. Configure input, parameter and output in `config.json`. All required resources files are in directory `RESOURCES/`, and the output network file is in directory `OUTPUT/`. See **DESCRIPTION OF RESOURCE FILES** and **DESCRIPTION OF OUTPUT FILE** for details.
+2. Configure input, parameter and output in `config.json`. All required resources files are in directory `RESOURCES/`, and the output network file is in directory `OUTPUT/`. See **DESCRIPTION OF RESOURCE FILES**, **DESCRIPTION OF INPUT PARAMETERS** and **DESCRIPTION OF OUTPUT FILE** for details.
 	
 	```json
 	{
@@ -96,7 +96,41 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 3. Run NetProphet 2.0.
 
 	```
+	cd ${NETPROPHET2_DIR}
 	sbatch NetProphet2
+	```
+
+4. Progress monitoring and debugging. After the SLURM job starts, a log file records the progress as the following.
+	
+	```
+	Unlocking working directory.
+	Provided cores: 2
+	Rules claiming more threads will be scaled down.
+	Job counts:
+		count	jobs
+		1	all
+		1	assemble_final_network
+		1	build_motif_network
+		1	combine_npwa_bnwa
+		1	infer_motifs
+		1	make_directories
+		1	map_bart_network
+		1	map_np_network
+		1	prepare_resources
+		1	score_motifs
+		1	weighted_average_bart_network
+		1	weighted_average_np_network
+		12
+	rule make_directories:
+		output : ...
+	1 of 12 steps (8%) done
+	rule prepare_resources:
+	...
+	2 of 12 steps (17%) done
+	...
+	...
+	...
+	12 of 12 steps (100%) done
 	```
 
 ###DESCRIPTION OF RESOURCE FILES
