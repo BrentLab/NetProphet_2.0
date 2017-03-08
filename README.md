@@ -133,6 +133,8 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	12 of 12 steps (100%) done
 	```
 
+> NOTE: The resource data provided is used for mapping a Yeast subnetwork. Visit http://mblab.wustl.edu/software.html for the resources for mapping whole TF network in yeast and fruit fly.
+
 ###DESCRIPTION OF RESOURCE FILES
 
 * FILENAME_EXPRESSION_DATA
