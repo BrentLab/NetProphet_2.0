@@ -200,7 +200,7 @@ Dij =  -ln(Pi(j))*sgn(Yi(j) when Fi(j) <= 0.05 and Dij =  0 when Fi(j) >= 0.05
 
 ###CALCULATING THE PERCENT IDENTITIES BETWEEN THE DBDS
 
-See supplemental package at http://mblab.wustl.edu/software.html for details.
+See supplemental package at https://github.com/yiming-kang/DBD_PercentIdentity_Calculation for details.
 
 ###REFERENCES
 
