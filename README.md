@@ -12,10 +12,9 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 ###INSTALLATION INSTRUCTIONS
 
-1. Unpack NetProphet 2.0
+1. Configure NetProphet 2.0 directory
 	
 	```
-	tar -zxvf NetProphet_2.0.tar.gz
 	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
 	```
 
