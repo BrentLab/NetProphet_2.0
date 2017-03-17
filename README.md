@@ -136,7 +136,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 ### DESCRIPTION OF RESOURCE FILES
 
-FILE | DESCRITPION
+FILE/DIRECTORY | DESCRITPION
 --- | ---
 FILENAME_EXPRESSION_DATA | A matrix of the expression values of all genes measured. Rows represent genes, columns represent samples/conditions, i.e. the matrix dimension is number of genes x number of samples.
 FILENAME_FOLDCHANGE_DATA | A matrix of fold change form of the expression values, in which the fold change of each gene in each sample is based on the mean expression values of that gene in the control samples. The matrix dimension is the same as data.expr.
@@ -156,7 +156,7 @@ MOTIF_THRESHOLD | The threshold on the robustness score calculated in FIRE's jac
 
 ### DESCRIPTION OF OUTPUT FILE
 
-FILENAME | DESCRITPION
+FILE | DESCRITPION
 --- | ---
 netprophet2_network.adjmtr | A adjacency matrix of the final scores predicted by NetProphet 2.0. The rows represent regulators/TFs and the columns represent genes, i.e. the matrix dimension is # of regulators x # of target genes. Each entry Mij of matrix M is the score of the interaction between regulator Ri and target gene Tj. In this matrix, interactions with higher scores are more likely to be direct, functional interactions.
 
