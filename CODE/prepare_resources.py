@@ -47,6 +47,7 @@ def write_tsv(fn, adjmtr, conds, genes):
 
 
 def make_nonrepeat_conditions(conditions):
+    conditions = np.array(conditions, dtype='|S500')
     non_unique_conds = [x for n, x in enumerate(conditions) if x in conditions[:n]]
     for x in np.unique(np.array(non_unique_conds)):
         indx = np.where(conditions == x)[0]
@@ -92,10 +93,11 @@ def main(argv):
     pert = np.zeros((len(genes),len(conditions)), dtype=int)
     pert_bool = np.array([['FALSE']*len(conditions)]*len(genes), dtype=str)
     for j in range(len(conditions)):
-    	i = np.where(genes == conditions[j])[0]
-    	if len(i) > 0:
-    		pert[i[0],j] = 1
-    		pert_bool[i[0],j] = 'TRUE'
+        if conditions[j] in regulators:
+        	i = np.where(genes == conditions[j])[0]
+        	if len(i) > 0:
+        		pert[i[0],j] = 1
+        		pert_bool[i[0],j] = 'TRUE'
     np.savetxt(parsed.output_pert_binary, pert, fmt="%d", delimiter="\t")
     write_tsv(parsed.output_pert_boolean, pert_bool.T, nonrepeat_conditions, genes)
 
