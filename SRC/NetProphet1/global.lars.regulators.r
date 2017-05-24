@@ -155,7 +155,18 @@ lars.multi <- function(tdata,rdata,pert,prior,allowed)
 		x <- rdata[,mindices] * prior[,i] 
 		x[which(allowed[,i]==0),]<-0; 
 
-		results.lars <- lars(t(x),tdata[i,mindices],trace=FALSE,max.steps=600,type="lasso",normalize=FALSE,intercept=TRUE,use.Gram=FALSE);
+		##### YK patch 05-23-2017
+		# results.lars <- lars(t(x),tdata[i,mindices],trace=FALSE,max.steps=600,type="lasso",normalize=FALSE,intercept=TRUE,use.Gram=FALSE);
+		y <- tdata[i,mindices];
+		results.lars.flag <- TRUE;
+		sample.indx <- length(y); 
+		while (results.lars.flag) {
+			results.lars <- try(lars(t(x[,1:sample.indx]),y[1:sample.indx],trace=FALSE,max.steps=600,type="lasso",normalize=FALSE,intercept=TRUE,use.Gram=FALSE));
+			results.lars.flag <- class(results.lars) =='try-error';
+			if (results.lars.flag) { cat(' *no soln* '); }
+			sample.indx <- sample.indx-1; 
+		}
+		#####
 		lars.paths[[i]] <- list(beta=results.lars$beta, mu=results.lars$mu, meanx=results.lars$meanx, C.Max=c(results.lars$C.Max,0))
 	}
 	cat("\n")
