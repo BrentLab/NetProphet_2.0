@@ -74,7 +74,7 @@ def main(argv):
             f = open(fn_tf, "r")
             lines = f.readlines()
             for i in range(len(lines)):
-                paired_tf = lines[i].split(":")[0]
+                paired_tf = lines[i].split("\t")[0].split(":")[0]
                 paired_pctid = float(lines[i].split()[1])
 
                 if paired_pctid >= parsed.dbd_cutoff:
