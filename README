@@ -37,6 +37,7 @@ INSTALLATION INSTRUCTIONS
 		unzip -q FIRE_1.1a.zip;
 		cd FIRE_1.1a/;
 		chmod 775 configure;
+        ./configure;
 		make;
 		export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/;
 		export PATH=${FIREDIR}:$PATH;
