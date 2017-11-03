@@ -35,6 +35,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	unzip -q FIRE_1.1a.zip
 	cd FIRE_1.1a/
 	chmod 775 configure
+	./configure
 	make
 	```
 
