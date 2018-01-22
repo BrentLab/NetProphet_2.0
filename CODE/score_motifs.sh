@@ -1,7 +1,9 @@
-#! /bin/bash
+#!/bin/bash
+#SBATCH -n 1
 #SBATCH --mem=8G
-#SBATCH --ntasks-per-node=1
 #SBATCH -D ./LOG
+#SBATCH -o motif_scoring.out
+#SBATCH -e motif_scoring.err
 
 # Input variables
 IN_TF_LIST=$1 	# list of tf names

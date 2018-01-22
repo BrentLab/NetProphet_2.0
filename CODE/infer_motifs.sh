@@ -1,7 +1,9 @@
 #!/bin/bash
+#SBATCH -n 1
 #SBATCH --mem=8G
-#SBATCH --ntasks-per-node=1
 #SBATCH -D ./LOG
+#SBATCH -o motif_inference.out
+#SBATCH -e motif_inference.err
 
 fn_tf_list=$1		# a list of tf names
 fn_fasta=$2 		# promoter sequence file
