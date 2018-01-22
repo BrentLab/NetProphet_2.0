@@ -45,17 +45,18 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	cd ${NETPROPHET2_DIR}/SRC/
 	tar -zxvf meme_4.9.1.tar.gz
 	cd meme_4.9.1/
-	./configure --prefix=${NETPROPHET2_DIR}/SRC/meme \
-	--with-url="http://meme.nbcr.net/meme"
+	./configure --prefix=${NETPROPHET2_DIR}/SRC/meme_4.9.1 --with-url="http://meme.nbcr.net/meme"
 	make
 	make test
 	make install
 	```
 
-5. Install R LARS and package
+5. Install R package
 
 	```
-	cd ${NETPROPHET2_DIR}/SRC/NetProphet1
+	cd ${NETPROPHET2_DIR}/SRC/
+	R CMD INSTALL BayesTree_0.3-1.3.tar.gz 
+	cd NetProphet1/
 	R CMD INSTALL lars_0.9-8.tar.gz
 	R --no-init-file CMD INSTALL Rmpi_0.5-9.tar.gz
 	cd ${NETPROPHET2_DIR}

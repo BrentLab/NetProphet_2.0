@@ -1,8 +1,9 @@
 #!/bin/bash
-
 #SBATCH -n 11
-#SBATCH --mem-per-cpu=60G
+#SBATCH --mem=60G
 #SBATCH -D ./SRC/NetProphet1/
+#SBATCH -o ../../LOG/netprophet1.out
+#SBATCH -e ../../LOG/netprophet1.err
 
 targetExpressionFile=${1}
 regulatorExpressionFile=${2}
@@ -20,5 +21,5 @@ targetGeneNamesFileName=${13}
 
 echo "calling mpirun now, SLURM_NTASKS=${SLURM_NTASKS}"
 
-mpirun -np ${SLURM_NTASKS} R --no-save -q --args ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedAdjLstFileName} ${regulatorGeneNamesFileName} ${targetGeneNamesFileName} < run_netprophet_parallel_init.r > ${outputDirectory}/r.out
+mpirun -np ${SLURM_NTASKS} R --no-save -q --args ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedAdjLstFileName} ${regulatorGeneNamesFileName} ${targetGeneNamesFileName} < run_netprophet_parallel_init.r
 
