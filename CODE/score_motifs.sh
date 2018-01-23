@@ -36,6 +36,7 @@ do
 		echo "*** No motif exists"
 	fi
 
+	sleep $[ ($RANDOM % 20) + 1]s #sleep between 1-20 sec to prevent write lock 
 	echo $motif >> ${LOG_FILE}
 done < $IN_TF_LIST
 
