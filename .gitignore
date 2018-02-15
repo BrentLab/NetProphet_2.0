@@ -1,9 +1,9 @@
 .DS_Store
 .snakemake/
-./CODE/*.pyc
-./SRC/FIRE-1.1a/
-./SRC/meme/
-./SRC/meme_4.9.1/
-./OUTPUT/
-./RESOURCES/tmp/
-./LOG/
+CODE/*.pyc
+SRC/FIRE-1.1a/
+SRC/meme/
+SRC/meme_4.9.1/
+OUTPUT/
+RESOURCES/tmp/
+LOG/

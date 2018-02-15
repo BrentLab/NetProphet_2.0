@@ -18,7 +18,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
 	```
 
-2. Install Snakemake (workflow management sytem)
+2. Install Snakemake (workflow management system)
 
 	```
 	cd ${NETPROPHET2_DIR}/SRC/
@@ -32,8 +32,8 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 	```
 	cd ${NETPROPHET2_DIR}/SRC/
-	unzip -q FIRE_1.1a.zip
-	cd FIRE_1.1a/
+	unzip -q FIRE-1.1a.zip
+	cd FIRE-1.1a/
 	chmod 775 configure
 	./configure
 	make
@@ -43,23 +43,41 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 	```	
 	cd ${NETPROPHET2_DIR}/SRC/
+    mkdir -p meme/
 	tar -zxvf meme_4.9.1.tar.gz
 	cd meme_4.9.1/
-	./configure --prefix=${NETPROPHET2_DIR}/SRC/meme_4.9.1 --with-url="http://meme.nbcr.net/meme"
+	./configure --prefix=${NETPROPHET2_DIR}/SRC/meme --with-url="http://meme.nbcr.net/meme"
 	make
 	make test
 	make install
 	```
 
-5. Install R package
+5. Install R packages
 
 	```
-	cd ${NETPROPHET2_DIR}/SRC/
-	R CMD INSTALL BayesTree_0.3-1.3.tar.gz 
-	cd NetProphet1/
-	R CMD INSTALL lars_0.9-8.tar.gz
-	R --no-init-file CMD INSTALL Rmpi_0.5-9.tar.gz
-	cd ${NETPROPHET2_DIR}
+	cd ${NETPROPHET2_DIR}/SRC/R_pkgs/
+	module load R/3.2.1  #if not loaded by default
+	```
+	
+	1. Install the following exact version: 
+		* lars v0.9-8
+		* BayesTree v0.3-1.3
+
+	```R
+	> install.packages("BayesTree_0.3-1.3.tar.gz", lib="<your_local_R_lib>") 
+	> install.packages("lars_0.9-8.tar.gz", lib=<your_local_R_lib>)
+	```
+	
+	2. **[Optional]** Install Rmpi, if not available in your system.
+
+	```R
+	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>)
+	```
+
+	3. Add path to your local R libray in `$HOME/.Rprofile`
+
+	```
+	.libPaths("<your_local_R_lib>")
 	```
 
 ### EXAMPLE USAGE
@@ -181,6 +199,8 @@ Dij =  -ln(Pi(j))*sgn(Yi(j) when Fi(j) <= 0.05 and Dij =  0 when Fi(j) >= 0.05
 See supplemental package at https://github.com/yiming-kang/DBD_PercentIdentity_Calculation for details.
 
 ### REFERENCES
+
+Kang, Y, et al. NetProphet 2.0: Mapping Transcription Factor Networks by Exploiting Scalable Data Resources. Bioinformatics 2018;34(2):249–257.
 
 Haynes, B.C., et al. Mapping functional transcription factor networks from gene expression data. Genome research 2013;23(8):1319-1328.
 
