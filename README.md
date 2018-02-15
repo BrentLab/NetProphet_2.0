@@ -65,13 +65,13 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 	```R
 	> install.packages("BayesTree_0.3-1.3.tar.gz", lib="<your_local_R_lib>") 
-	> install.packages("lars_0.9-8.tar.gz", lib=<your_local_R_lib>)
+	> install.packages("lars_0.9-8.tar.gz", lib="<your_local_R_lib>")
 	```
 	
 	2. **[Optional]** Install Rmpi, if not available in your system.
 
 	```R
-	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>)
+	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>")
 	```
 
 	3. Add path to your local R libray in `$HOME/.Rprofile`
