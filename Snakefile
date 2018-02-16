@@ -1,8 +1,7 @@
 configfile: "config.json"
 workdir: config["NETPROPHET2_DIR"]
 
-NETPROPHET2_NETWORK = "/".join([config["OUTPUT_DIR"],
-							config["FILENAME_NETPROPHET2_NETWORK"]])
+NETPROPHET2_NETWORK = "/".join([config["OUTPUT_DIR"],config["FILENAME_NETPROPHET2_NETWORK"]])
 
 rule all:
 	input:
@@ -77,17 +76,17 @@ rule map_np_network:
 					"tmp/allowed.adj"]),
 		p = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					"tmp/data.pert.adj"]),
-		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
-	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/"]),
+		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
+	output:
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"np.adjmtr"])
 	shell:
 		"""
 		./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} \
 		-a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} \
-		-o {output.o} -n {output.n}
+		-o {input.o} -n {output.n}
 		"""
 
 rule map_bart_network:
