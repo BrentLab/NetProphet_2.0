@@ -111,7 +111,7 @@ rule weighted_average_np_network:
 		r = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["FILENAME_REGULATORS"]]),
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
-					config["DIR_DBD_PID"]]),
+					config["DBD_PID_DIR"]]),
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/np.adjmtr"])
 	output:
@@ -128,7 +128,7 @@ rule weighted_average_bart_network:
 		r = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["FILENAME_REGULATORS"]]),
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
-					config["DIR_DBD_PID"]]),
+					config["DBD_PID_DIR"]]),
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/bn.adjmtr"])
 	output:
@@ -226,7 +226,7 @@ rule assemble_final_network:
 		r = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["FILENAME_REGULATORS"]]),
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
-					config["DIR_DBD_PID"]]),
+					config["DBD_PID_DIR"]]),
 		d = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],"networks/"]),
 		i = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/npwa_bnwa.adjmtr"]),

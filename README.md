@@ -79,7 +79,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 1. Set pipeline paths. Execute the following for each NetProphet 2.0 run, or add them to `$HOME/.profile` or `$HOME/.bash_profile` once for all.
 	
-	```".bash_profile"
+	```
 	export R_LIBS=<your_local_R_lib>
 	export PATH=$HOME/.local/bin:$PATH
 	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
@@ -94,12 +94,14 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	```json
 	{
 		"NETPROPHET2_DIR": "/path/to/NetProphet_2.0",
+		"RESOURCES_DIR": "RESOURCES",
+		"OUTPUT_DIR": "OUTPUT",
 		"FILENAME_EXPRESSION_DATA": "data.expr",
 		"FILENAME_DE_ADJMTR": "signed.de.adj",
 		"FILENAME_GENES": "genes",
 		"FILENAME_REGULATORS": "regulators",
 		"FILENAME_SAMPLE_CONDITIONS": "conditions",
-		"DIR_DBD_PID": "DBD_PIDS",
+		"DBD_PID_DIR": "DBD_PIDS",
 		"FILENAME_PROMOTERS": "promoter.fasta",
 		"PROMOTER_LENGTH": 600,
 		"MOTIF_THRESHOLD": 16,
