@@ -81,7 +81,7 @@ rule map_np_network:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
 	output:
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"np.adjmtr"])
+					"networks/np.adjmtr"])
 	shell:
 		"""
 		./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} \

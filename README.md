@@ -75,19 +75,15 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>")
 	```
 
-	3. Add path to your local R libray in `$HOME/.Rprofile`
-	```
-	.libPaths("<your_local_R_lib>")
-	```
-
 ### EXAMPLE USAGE
 
-1. Set pipeline paths. Execute the following for each NetProphet 2.0 run, or add them to `$HOME/.profile`.
+1. Set pipeline paths. Execute the following for each NetProphet 2.0 run, or add them to `$HOME/.profile` once for all.
 	
-	```
+	```.bash_profile
+	export R_LIBS=<your_local_R_lib>
+	export PATH=$HOME/.local/bin:$PATH
 	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
 	export PATH=${NETPROPHET2_DIR}:$PATH
-	export PATH=$HOME/.local/bin:$PATH
 	export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/
 	export PATH=${FIREDIR}:$PATH
 	export PATH=${NETPROPHET2_DIR}/SRC/meme/bin/:$PATH
