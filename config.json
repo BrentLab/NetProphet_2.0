@@ -1,7 +1,6 @@
 {
 	"NETPROPHET2_DIR": "/scratch/mblab/yiming.kang/NetProphet_2.0",
 	"FILENAME_EXPRESSION_DATA": "data.expr",
-	"FILENAME_FOLDCHANGE_DATA": "data.fc",
 	"FILENAME_DE_ADJMTR": "signed.de.adj",
 	"FILENAME_GENES": "genes",
 	"FILENAME_REGULATORS": "regulators",
@@ -10,5 +9,6 @@
 	"FILENAME_PROMOTERS": "promoter.fasta",
 	"PROMOTER_LENGTH": 600,
 	"MOTIF_THRESHOLD": 16,
-	"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr"
+	"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr",
+	"CLEANUP": "false"
 }

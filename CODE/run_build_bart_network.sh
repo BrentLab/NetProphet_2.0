@@ -2,8 +2,8 @@
 #SBATCH -n 32
 #SBATCH --mem=20G
 #SBATCH -D ./LOG
-#SBATCH -o bart_network.out
-#SBATCH -e bart_network.err
+#SBATCH -o bart_network_%A.out
+#SBATCH -e bart_network_%A.err
 
 data_fc_expr=${1}
 pert_matrix=${2}

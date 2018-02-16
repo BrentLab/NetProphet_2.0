@@ -28,7 +28,6 @@ rule prepare_resources:
 		g = config["NETPROPHET2_DIR"] + "/RESOURCES/" + config["FILENAME_GENES"],
 		r = config["NETPROPHET2_DIR"] + "/RESOURCES/" + config["FILENAME_REGULATORS"],
 		e = config["NETPROPHET2_DIR"] + "/RESOURCES/" + config["FILENAME_EXPRESSION_DATA"],
-		f = config["NETPROPHET2_DIR"] + "/RESOURCES/" + config["FILENAME_FOLDCHANGE_DATA"],
 		c = config["NETPROPHET2_DIR"] + "/RESOURCES/" + config["FILENAME_SAMPLE_CONDITIONS"],
 		flag = config["NETPROPHET2_DIR"] + "/LOG/flag.make_dir"
 	output:
@@ -42,7 +41,7 @@ rule prepare_resources:
 	shell:
 		"""
 		python CODE/prepare_resources.py -g {input.g} -r {input.r} -e {input.e} \
-		-f {input.f} -c {input.c} -or {output.r} -of {output.f} -oa {output.a} \
+		-c {input.c} -or {output.r} -of {output.f} -oa {output.a} \
 		-op1 {output.p1} -op2 {output.p2} -ol {output.l}; touch {output.flag}
 		"""
 
@@ -147,7 +146,8 @@ rule score_motifs:
 		m = config["NETPROPHET2_DIR"] + "/OUTPUT/motif_inference/motifs.txt",
 		flag = config["NETPROPHET2_DIR"] + "/LOG/flag.score_motifs"
 	shell:
-		"""bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.l} \
+		"""
+		bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.l} \
 		{input.p} {output.m} {output.flag}
 		"""
 
@@ -174,18 +174,22 @@ rule assemble_final_network:
 		a = config["NETPROPHET2_DIR"] + "/RESOURCES/" + config["DIR_DBD_PID"],
 		d = config["NETPROPHET2_DIR"] + "/OUTPUT/networks/",
 		i = config["NETPROPHET2_DIR"] + "/OUTPUT/networks/npwa_bnwa.adjmtr",
-		m = config["NETPROPHET2_DIR"] + "/OUTPUT/networks/mn.adjmtr"
+		m = config["NETPROPHET2_DIR"] + "/OUTPUT/networks/mn.adjmtr",
+		f = config["CLEANUP"]
 	output:
-		o = NETPROPHET2_NETWORK
+		o = config["NETPROPHET2_DIR"] + "/OUTPUT/" + NETPROPHET2_NETWORK
 	shell:
-		"""python CODE/combine_networks.py -s resort -n {input.i} -b {input.m} \
+		"""
+		python CODE/combine_networks.py -s resort -n {input.i} -b {input.m} \
 		-od {input.d} -om npwa_bnwa_mn.adjmtr; \
 		python CODE/weighted_avg_similar_dbds.py -n {input.d}/npwa_bnwa_mn.adjmtr \
 		-r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; \
-		rm LOG/*; \
-		rm -rf OUTPUT/motif_inference; \
-		rm -rf OUTPUT/networks; \
-		rm -rf RESOURCES/tmp; \
+		if {input.cleanup}; then
+			rm LOG/*; 
+			rm -rf OUTPUT/motif_inference; 
+			rm -rf OUTPUT/networks; 
+			rm -rf RESOURCES/tmp;
+		fi
 		echo '### COMPLETED! ###';
 		"""
 

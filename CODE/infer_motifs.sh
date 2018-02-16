@@ -2,8 +2,8 @@
 #SBATCH -n 1
 #SBATCH --mem=8G
 #SBATCH -D ./LOG
-#SBATCH -o motif_inference.out
-#SBATCH -e motif_inference.err
+#SBATCH -o motif_inference_%A.out
+#SBATCH -e motif_inference_%A.err
 
 fn_tf_list=$1		# a list of tf names
 fn_fasta=$2 		# promoter sequence file

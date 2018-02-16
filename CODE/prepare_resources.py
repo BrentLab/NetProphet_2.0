@@ -78,9 +78,10 @@ def main(argv):
     np.savetxt(parsed.output_reg_expr, data[reg_indx,:], fmt="%.10f", delimiter="\t")
 
     ##prepare fold change of expression data (conditions x genes)
-    data = np.loadtxt(parsed.fc_data, dtype=str)
+    # data_fc = np.loadtxt(parsed.fc_data, dtype=str)
+    data_fc = np.exp(data)
     nonrepeat_conditions = make_nonrepeat_conditions(conditions)
-    write_tsv(parsed.output_data_fc, data.T, nonrepeat_conditions, genes)
+    write_tsv(parsed.output_data_fc, data_fc.T, nonrepeat_conditions, genes)
 
     ##prepare allowed matrix (regulators x genes)
     allowed = np.ones((len(regulators),len(genes)), dtype=int)

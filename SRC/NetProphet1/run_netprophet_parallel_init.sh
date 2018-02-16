@@ -2,8 +2,8 @@
 #SBATCH -n 11
 #SBATCH --mem=60G
 #SBATCH -D ./SRC/NetProphet1/
-#SBATCH -o ../../LOG/netprophet1.out
-#SBATCH -e ../../LOG/netprophet1.err
+#SBATCH -o ../../LOG/netprophet1_%A.out
+#SBATCH -e ../../LOG/netprophet1_%A.err
 
 targetExpressionFile=${1}
 regulatorExpressionFile=${2}

@@ -2,8 +2,8 @@
 #SBATCH -n 1
 #SBATCH --mem=8G
 #SBATCH -D ./LOG
-#SBATCH -o motif_scoring.out
-#SBATCH -e motif_scoring.err
+#SBATCH -o motif_scoring_%A.out
+#SBATCH -e motif_scoring_%A.err
 
 # Input variables
 IN_TF_LIST=$1 	# list of tf names

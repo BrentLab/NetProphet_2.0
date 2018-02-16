@@ -59,7 +59,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	module load R/3.2.1  #if not loaded by default
 	```
 	
-	1. Install the following exact version: 
+	1. Install the following package version: 
 		* lars v0.9-8
 		* BayesTree v0.3-1.3
 
@@ -69,13 +69,11 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	```
 	
 	2. **[Optional]** Install Rmpi, if not available in your system.
-
 	```R
 	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>")
 	```
 
 	3. Add path to your local R libray in `$HOME/.Rprofile`
-
 	```
 	.libPaths("<your_local_R_lib>")
 	```
@@ -158,8 +156,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 FILE/DIRECTORY | DESCRITPION
 --- | ---
-FILENAME_EXPRESSION_DATA | A matrix of the expression values of all genes measured. Rows represent genes, columns represent samples/conditions, i.e. the matrix dimension is number of genes x number of samples.
-FILENAME_FOLDCHANGE_DATA | A matrix of fold change form of the expression values, in which the fold change of each gene in each sample is based on the mean expression values of that gene in the control samples. The matrix dimension is the same as data.expr.
+FILENAME_EXPRESSION_DATA | A matrix of the log fold-change expression values in the samples with respect to those in wildtype. Rows represent genes, columns represent samples/conditions, i.e. the matrix dimension is number of genes x number of samples.
 FILENAME_DE_ADJMTR | A adjacency matrix of the interactions between regualtors and target genes, which are calculated via differential expression analysis. The rows represent regulators/TFs and the columns represent genes, i.e. the matrix dimension is number of regulators x number of target genes. For each possible interaction between regulator i (Ri) and target gene j (Tj), set entry Mij to the signed logged differential expression significance of Tj when Ri is perturbed. If Ri has not been perturbed, then set Mij = 0 for all j. See **CALCULATING THE DIFFERENTIAL EXPRESSION COMPONENT** for details.
 FILENAME_GENES | A list of gene names. Capitalized systematic names are recommended.
 FILENAME_REGULATORS | A list of gene names that encode transcription factors (TFs). These regulators must be included in the list of gene names. The regulator names should have the same naming scheme as the gene names. 
