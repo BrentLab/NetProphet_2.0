@@ -2,6 +2,8 @@
 
 NetProphet 2.0 is a second-generation “data light” TF-network mapping algorithm. It requires only data that can be generated from low-cost, reliable, and easily scalable experimental methods. NetProphet 2.0 relies on three fundamental ideas. First, combining several expression-based network algorithms that use different types of models can yield better results than using either one alone. Second, TFs with similar DNA binding domains (in terms of amino acid sequence) tend to bind similar sets of target genes. Third, even an imperfect net-work map can be used to infer models of each TF’s DNA binding prefer-ences from the promoter sequences of its putative targets and these mod-els can be used to further refine the network.
 
+![NetProphet2.0_overview](NP2_overview.png)
+
 ### SYSTEM REQUIREMENTS
 
 * Slurm workload manager (tested on v15.08.7)
