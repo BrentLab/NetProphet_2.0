@@ -77,9 +77,9 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 ### EXAMPLE USAGE
 
-1. Set pipeline paths. Execute the following for each NetProphet 2.0 run, or add them to `$HOME/.profile` once for all.
+1. Set pipeline paths. Execute the following for each NetProphet 2.0 run, or add them to `$HOME/.profile` or `$HOME/.bash_profile` once for all.
 	
-	```.bash_profile
+	```".bash_profile"
 	export R_LIBS=<your_local_R_lib>
 	export PATH=$HOME/.local/bin:$PATH
 	export NETPROPHET2_DIR=/path/to/NetProphet_2.0
