@@ -97,7 +97,6 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	{
 		"NETPROPHET2_DIR": "/path/to/NetProphet_2.0",
 		"FILENAME_EXPRESSION_DATA": "data.expr",
-		"FILENAME_FOLDCHANGE_DATA": "data.fc",
 		"FILENAME_DE_ADJMTR": "signed.de.adj",
 		"FILENAME_GENES": "genes",
 		"FILENAME_REGULATORS": "regulators",
@@ -156,7 +155,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 FILE/DIRECTORY | DESCRITPION
 --- | ---
-FILENAME_EXPRESSION_DATA | A matrix of the log fold-change expression values in the samples with respect to those in wildtype. Rows represent genes, columns represent samples/conditions, i.e. the matrix dimension is number of genes x number of samples.
+FILENAME_EXPRESSION_DATA | A matrix of the log2 fold-change expression values in the samples with respect to those in wildtype. Rows represent genes, columns represent samples/conditions, i.e. the matrix dimension is number of genes x number of samples.
 FILENAME_DE_ADJMTR | A adjacency matrix of the interactions between regualtors and target genes, which are calculated via differential expression analysis. The rows represent regulators/TFs and the columns represent genes, i.e. the matrix dimension is number of regulators x number of target genes. For each possible interaction between regulator i (Ri) and target gene j (Tj), set entry Mij to the signed logged differential expression significance of Tj when Ri is perturbed. If Ri has not been perturbed, then set Mij = 0 for all j. See **CALCULATING THE DIFFERENTIAL EXPRESSION COMPONENT** for details.
 FILENAME_GENES | A list of gene names. Capitalized systematic names are recommended.
 FILENAME_REGULATORS | A list of gene names that encode transcription factors (TFs). These regulators must be included in the list of gene names. The regulator names should have the same naming scheme as the gene names. 

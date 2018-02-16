@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -D ./
-#SBATCH -o LOG/netprophet2_masterlog.out
-#SBATCH -e LOG/netprophet2_masterlog.err
+#SBATCH -o LOG/netprophet2_masterlog_%A.out
+#SBATCH -e LOG/netprophet2_masterlog_%A.err
 
 module load R/3.2.1
 module load openmpi

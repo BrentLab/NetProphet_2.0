@@ -79,7 +79,7 @@ def main(argv):
 
     ##prepare fold change of expression data (conditions x genes)
     # data_fc = np.loadtxt(parsed.fc_data, dtype=str)
-    data_fc = np.exp(data)
+    data_fc = 2**data
     nonrepeat_conditions = make_nonrepeat_conditions(conditions)
     write_tsv(parsed.output_data_fc, data_fc.T, nonrepeat_conditions, genes)
 
