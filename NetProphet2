@@ -7,4 +7,4 @@ module load R/3.2.1
 module load openmpi
 
 snakemake --unlock
-snakemake --cores 2 --latency-wait 172800 
+snakemake --cores 2 --latency-wait 172800 -s Snakefile all
