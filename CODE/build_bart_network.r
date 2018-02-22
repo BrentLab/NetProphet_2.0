@@ -274,15 +274,15 @@ argList <- as.list(read.table(text = transposedArgString, stringsAsFactors = FAL
 print(argList);
 
 # reading data
-fc <- as.matrix(read.table(argList$fcFile)); # training fold change expression matrix, rows are samples, cols are genes
-isPerturbed <- as.matrix(read.table(argList$isPerturbedFile)); # training logical matrix of perturbation, rows are samples, cols are genes
+fc <- as.matrix(read.table(argList$fcFile, check.names=FALSE)); # training fold change expression matrix, rows are samples, cols are genes
+isPerturbed <- as.matrix(read.table(argList$isPerturbedFile, check.names=FALSE)); # training logical matrix of perturbation, rows are samples, cols are genes
 tfName <- read.table(argList$tfNameFile, stringsAsFactors = FALSE)[[1]]; # get TF names, each row is a TF
 
 # preparing training data
 tfLevel <- matrix(1, nrow(fc), length(tfName), dimnames = list(rownames(fc), tfName));
 availableTfName <- intersect(tfName, colnames(fc)); # names of TFs available in the expression data
 unavailableTfName <- setdiff(tfName, colnames(fc));
-if (length(unavailableTfName) > 0) warning(paste("data unnavailable for TF", paste(unavailableTfName, collapse = ", ")));
+if (length(unavailableTfName) > 0) warning(paste("data unavailable for TF", paste(unavailableTfName, collapse = ", ")));
 tfLevel[, availableTfName] <- fc[, availableTfName];
 tgtLevel <- fc;
 tgtLevel[isPerturbed] <- NA;  # masking perturbed entries in response variables from training
