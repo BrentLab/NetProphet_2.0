@@ -76,8 +76,7 @@ rule map_np_network:
 					"tmp/allowed.adj"]),
 		p = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					"tmp/data.pert.adj"]),
-		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/"]),
+		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"]]),
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
 	output:
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
@@ -86,7 +85,7 @@ rule map_np_network:
 		"""
 		./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} \
 		-a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} \
-		-o {input.o} -n {output.n}
+		-o {input.o}/networks/ -n {output.n}
 		"""
 
 rule map_bart_network:
@@ -227,7 +226,7 @@ rule assemble_final_network:
 					config["FILENAME_REGULATORS"]]),
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["DBD_PID_DIR"]]),
-		d = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],"networks/"]),
+		d = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"]]),
 		i = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/npwa_bnwa.adjmtr"]),
 		m = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
@@ -239,15 +238,15 @@ rule assemble_final_network:
 		"""
 		python CODE/combine_networks.py -s resort -n {input.i} -b {input.m} \
 		-od {input.d} -om npwa_bnwa_mn.adjmtr; \
-		python CODE/weighted_avg_similar_dbds.py -n {input.d}/npwa_bnwa_mn.adjmtr \
+		python CODE/weighted_avg_similar_dbds.py -n {input.d}/networks/npwa_bnwa_mn.adjmtr \
 		-r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; \
 		rm LOG/flag.*
-		if {input.cleanup}; then
-			rm LOG/*; 
-			rm -rf OUTPUT/motif_inference; 
-			rm -rf OUTPUT/networks; 
-			rm -rf RESOURCES/tmp;
-		fi
+		# if {input.cleanup}; then
+		# 	rm LOG/*; 
+		# 	rm -rf OUTPUT/motif_inference; 
+		# 	rm -rf OUTPUT/networks; 
+		# 	rm -rf RESOURCES/tmp;
+		# fi
 		echo '### COMPLETED! ###';
 		"""
 
