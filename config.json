@@ -1,6 +1,6 @@
 {
-	"NETPROPHET2_DIR": "/scratch/mblab/yiming.kang/NetProphet_2.0",
-	"RESOURCES_DIR": "RESOURCES",
+	"NETPROPHET2_DIR": "/path/to/NetProphet_2.0",
+	"RESOURCES_DIR": "RESOURCES_FULL",
 	"OUTPUT_DIR": "OUTPUT",
 	"FILENAME_EXPRESSION_DATA": "data.expr",
 	"FILENAME_DE_ADJMTR": "signed.de.adj",
@@ -11,6 +11,5 @@
 	"FILENAME_PROMOTERS": "promoter.fasta",
 	"PROMOTER_LENGTH": 600,
 	"MOTIF_THRESHOLD": 16,
-	"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr",
-	"CLEANUP": "false"
+	"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr"
 }
