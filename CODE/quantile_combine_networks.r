@@ -12,11 +12,12 @@ quantileCombine <- function(scoreList, plot = FALSE, verbose = FALSE, returnScor
 	absScoreList <- lapply(scoreList, abs);
 	nonNaCount <- colSums(!is.na(rawScoreMat)); # number of non NA entries of each member
 	combinedScoreMat <- rawScoreMat * NA; # matrix to store combined scores, each column is a combination using one representative distribution
-	if (verbose) cat("ranking scores ...\n");
+	if (verbose) cat("Ranking scores ... ");
 	rankMat <- apply(abs(rawScoreMat), 2, rank);  # rawScoreMat converted to ranks
 	rankMat[is.na(rawScoreMat)] <- NA;
+	if (verbose) cat("DONE\n");
 	if (length(unique(nonNaCount)) == 1) { # if every member has the same amount of non NA entries, invoke sort and rank functions to combine scores really fast
-		if (verbose) cat("sorting ...\n");
+		if (verbose) cat("Sorting scores ... ");
 		sorted <- apply(abs(rawScoreMat), 2, sort);
 		ix1 <- head(rep(sequence(nrow(sorted)), each = 2), -1);
 		ix2 <- tail(rep(sequence(nrow(sorted)), each = 2), -1);
@@ -28,7 +29,7 @@ quantileCombine <- function(scoreList, plot = FALSE, verbose = FALSE, returnScor
 			combinedScoreMat[, i] <- rowMeans(convertedMat * sign(rawScoreMat), na.rm = TRUE); # averaging the converted scores
 		}
 	} else { # if members have different amounts of non NA entries, cannot invoke sort and rank, quantiles need to be estimated 
-		if (verbose) cat("generating empirical cdf...\n");
+		if (verbose) cat("Generating empirical cdf... ");
 		qList <- lapply(scoreList, ecdf); # list if ecdf
 		portionMat <- (rankMat - 1) / rep(colMaxs(rankMat, na.rm = TRUE) - 1, each = nrow(rankMat)); # rankMat scaled to [0, 1]
 		portionMatrix[naIx] <- 0;
@@ -40,6 +41,7 @@ quantileCombine <- function(scoreList, plot = FALSE, verbose = FALSE, returnScor
 			combinedScoreMat[, i] <- rowMeans(convertedMat * sign(rawScoreMat), na.rm = TRUE); # averaging the converted scores
 		}
 	}
+	if (verbose) cat("DONE\n");
 	if (returnScoreListOfAllRepresentation) { # reshape combinedScoreMat to a list of combined scores, each is bases on one representative distribution
 		combinedScoreList <- list();
 		for (i in sequence(ncol(combinedScoreMat))) {
@@ -60,11 +62,10 @@ quantileCombine <- function(scoreList, plot = FALSE, verbose = FALSE, returnScor
 # main script
 args <- commandArgs(trailingOnly=TRUE)
 data <- list()
+cat("Loading network ... ")
 for (i in 1:(length(args)-1)) {
-	cat('Load:', toString(args[i]), '\n')
 	data[length(data)+1] <- list(as.matrix(read.table(toString(args[i]))))
 }
-# combined <- quantileCombine(data, verbose=TRUE, returnScoreListOfAllRepresentation=FALSE)
-# write.table(combined,args[length(args)],row.names=FALSE,col.names=FALSE,quote=FALSE)
+cat("DONE\n")
 combined <- quantileCombine(data, verbose=TRUE, returnScoreListOfAllRepresentation=TRUE)
 write.table(combined[[1]],args[length(args)],row.names=FALSE,col.names=FALSE,quote=FALSE)
