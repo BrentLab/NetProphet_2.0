@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH -n 11
-#SBATCH --mem=60G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem-per-cpu=10G
 #SBATCH -D ./SRC/NetProphet1/
-#SBATCH -o ../../LOG/netprophet1_%A.out
-#SBATCH -e ../../LOG/netprophet1_%A.err
+#SBATCH -o ../../LOG/map_netprophet1_network_%A.out
+#SBATCH -e ../../LOG/map_netprophet1_network_%A.err
 
 targetExpressionFile=${1}
 regulatorExpressionFile=${2}

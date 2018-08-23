@@ -153,7 +153,6 @@ export PATH=${NetProphetDir}:$PATH
 if [ $parallelizedFlag -eq 1 ]
 then
 	## Running in the parallelized fashion
-	##qsub -e ${outputDirectory} -o ${outputDirectory} -pe mpi 11 -R y -l h_vmem=25G run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
 	sbatch run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
 else
 	## Running in the sequential fashion
