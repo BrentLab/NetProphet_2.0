@@ -5,7 +5,7 @@ if (!require("stats")) try(install.packages("stats"));
 if (!require("matrixStats")) try(install.packages("matrixStats"));
 if (!require("Matrix")) try(install.packages("Matrix"));
 if (!require("abind")) try(install.packages("abind"));
-if (!require("restorepoint")) try(install.packages("restorepoint"));
+# if (!require("restorepoint")) try(install.packages("restorepoint"));
 
 getBartNetwork <- function(tgtLevel, tfLevel, regMat, unperturbedTfLevel, nBin = 3, ...) {
 	# use BART to generate a network structure prediction
