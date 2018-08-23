@@ -3,9 +3,9 @@ import sys
 import os
 import glob
 import argparse
-import numpy
+import numpy as np
 
-dbds_formats = ['multi_dbds', 'single_dbds', 'single_adjmtr']
+dbds_formats = ['multi_dbds', 'single_dbds']
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="Merge TF network scores by weighted averaging, where the weight uses DBD-PWM similarity fit.")
@@ -20,125 +20,9 @@ def parse_args(argv):
     parsed = parser.parse_args(argv[1:])
     return parsed
 
-def main(argv):
-    parsed = parse_args(argv)
-    parsed.dir_aligned_dbd += "" if parsed.dir_aligned_dbd.endswith("/") else "/"
-
-    rids = numpy.loadtxt(parsed.fn_rids, dtype=str)
-
-    use_pert_rids_only = False
-    if parsed.fn_pertrubed_rids != None:
-        use_pert_rids_only = True
-        pert_rids = numpy.intersect1d(rids, numpy.unique(numpy.loadtxt(parsed.fn_pertrubed_rids, dtype=str)))
-
-    # parse dbd percent identity and compute weights from sigmoid fit
-    sys.stdout.write("computing TF weights ...\n")
-
-    if parsed.dbds_formats.lower() == "multi_dbds":
-        # parse tf-dbd conversion
-        dbd2rid_list = numpy.loadtxt(parsed.fn_dbd2rids_conversion, dtype=str)
-        dbd2rid_dict = {}
-        for i in range(len(dbd2rid_list)):
-            dbd2rid_dict[dbd2rid_list[i][0]] = dbd2rid_list[i][1]
-
-        # get max tf similarity from multiple dbds and compute weights
-        tf_fractions_dict = {}
-        fns_dbd = glob.glob(parsed.dir_aligned_dbd + "*")
-        for fn_dbd in fns_dbd:
-            query_dbd = os.path.basename(fn_dbd)
-            query_tf = dbd2rid_dict[query_dbd]
-
-            f = open(fn_dbd, "r")
-            lines = f.readlines()
-            for i in range(len(lines)):
-                paired_tf = dbd2rid_dict[lines[i].split()[0]]
-                paired_pctid = float(lines[i].split()[1])
-
-                if paired_pctid >= parsed.dbd_cutoff:
-                    paired_weight = sigmoid(paired_pctid)
-
-                    if query_tf in tf_fractions_dict.keys():
-                        if (not paired_tf in tf_fractions_dict[query_tf].keys()) or (paired_pctid > tf_fractions_dict[query_tf][paired_tf]):
-                            tf_fractions_dict[query_tf][paired_tf] = paired_weight
-                    else:
-                        tf_fractions_dict[query_tf] = {paired_tf: paired_weight}
-            f.close()
-
-    elif parsed.dbds_formats.lower() == 'single_dbds':
-        # parse single dbd similarity and compute tf weigths
-        tf_fractions_dict = {}
-        fns_tf = glob.glob(parsed.dir_aligned_dbd + "*")
-        for fn_tf in fns_tf:
-            query_tf = os.path.basename(fn_tf)
-
-            f = open(fn_tf, "r")
-            lines = f.readlines()
-            for i in range(len(lines)):
-                paired_tf = lines[i].split("\t")[0].split(":")[0]
-                paired_pctid = float(lines[i].split()[1])
-
-                if paired_pctid >= parsed.dbd_cutoff:
-                    paired_weight = sigmoid(paired_pctid)
-
-                    if query_tf in tf_fractions_dict.keys():
-                        if (not paired_tf in tf_fractions_dict[query_tf].keys()) or (paired_pctid > tf_fractions_dict[query_tf][paired_tf]):
-                            tf_fractions_dict[query_tf][paired_tf] = paired_weight
-                    else:
-                        tf_fractions_dict[query_tf] = {paired_tf: paired_weight} 
-            f.close()
-
-    elif parsed.dbds_formats.lower() == 'single_adjmtr':
-        pass
-
-    else:
-        sys.exit("Improper dbd alignment score format.")
-
-    # filter the weights for perturbed tfs only
-    if use_pert_rids_only:
-        sys.stdout.write("recomputing TF weights for perturbed ones only\n")
-
-        for query_tf in tf_fractions_dict.keys():
-            for paired_tf in tf_fractions_dict[query_tf].keys():
-                if (not paired_tf in pert_rids) and (paired_tf != query_tf):
-                    tf_fractions_dict[query_tf][paired_tf] = 0
-
-    # merge similar tfs using weighted average
-    sys.stdout.write("weighted averaging similar TFs ...\n")
-
-    # parse network
-    network_input = numpy.loadtxt(parsed.fn_adjmtr_network)
-    network_output = numpy.zeros(network_input.shape) 
-
-    # weighted average
-    for query_tf in rids:
-        query_tf_index = numpy.where(rids == query_tf)[0][0]
-
-        if (not query_tf in tf_fractions_dict.keys()):
-            network_output[query_tf_index, :] = network_input[query_tf_index, :]
-
-        else:
-            if (len(tf_fractions_dict[query_tf].keys()) > 1):
-                paired_tf_indices = numpy.array([], dtype=int)
-                paired_tf_weights = numpy.array([], dtype=int)
-                for paired_tf in numpy.intersect1d(tf_fractions_dict[query_tf].keys(), rids):
-                    paired_tf_indices = numpy.append(paired_tf_indices, numpy.where(rids == paired_tf)[0][0])
-                    paired_tf_weights = numpy.append(paired_tf_weights, tf_fractions_dict[query_tf][paired_tf])
-
-                # compute weighted average
-                paired_tf_weights /= numpy.sum(paired_tf_weights)
-                network_sub = network_input[paired_tf_indices, :]
-                network_output[query_tf_index, :] = numpy.dot(paired_tf_weights,  network_sub)
-            else:
-                network_output[query_tf_index, :] = network_input[query_tf_index, :]
-
-    # write weighted average network
-    sys.stdout.write("writing network ...\n")
-
-    write_adjmtr(parsed.fn_output, network_output)
-
 
 def sigmoid(x):
-    return 0.9/(1+numpy.exp(-0.1*(x-40)))
+    return 0.9/(1+np.exp(-0.1*(x-40)))
 
 
 def write_adjmtr(fn, adjmtr):
@@ -151,6 +35,149 @@ def write_adjmtr(fn, adjmtr):
                 writer.write("%0.10f\t" % adjmtr[i,j])
         writer.write("\n")
     writer.close()
+
+
+def get_regulators(fn_rids, fn_pert_rids):    
+    rids = np.loadtxt(fn_rids, dtype=str)
+    pert_rids = np.intersect1d(rids, np.loadtxt(fn_pert_rids, dtype=str)) if fn_pert_rids is not None else None
+    return (rids, pert_rids)
+
+
+def get_tf_weights_multi_dbds(dir_dbd, dbd_cutoff, fn_conv):
+    ## parse tf-dbd conversion
+    dbd2rid_list = np.loadtxt(fn_conv, dtype=str)
+    dbd2rid_dict = {}
+    for i in range(len(dbd2rid_list)):
+        dbd2rid_dict[dbd2rid_list[i][0]] = dbd2rid_list[i][1]
+    ## loop thru dbd similarity files
+    tf_simscore_dict = {}
+    for fn_dbd in glob.glob(dir_dbd + "*"):
+        query_dbd = os.path.basename(fn_dbd)
+        query_tf = dbd2rid_dict[query_dbd]
+        if query_tf not in tf_simscore_dict.keys():
+            tf_simscore_dict[query_tf] = {}
+        ## get similarity scores 
+        f = open(fn_dbd, "r")
+        lines = f.readlines()
+        f.close()
+        for i in range(len(lines)):
+            paired_tf = dbd2rid_dict[lines[i].split()[0]]
+            paired_pctid = float(lines[i].split()[1])
+            ## store all scores
+            if paired_tf not in tf_simscore_dict[query_tf].keys():
+                tf_simscore_dict[query_tf][paired_tf] = []
+            tf_simscore_dict[query_tf][paired_tf].append(paired_pctid)
+    ## use max tf similarity from multiple dbds to compute weights
+    tf_weight_dict = {}
+    for query_tf in tf_simscore_dict.keys():
+        tf_weight_dict[query_tf] = {}
+        for paired_tf, scores in tf_simscore_dict[query_tf].iteritems():
+            scores = scores[scores >= dbd_cutoff]
+            if len(scores) > 0:
+                tf_weight_dict[query_tf][paired_tf] = sigmoid(max(scores))
+    return tf_weight_dict
+
+
+def get_tf_weights(dir_dbd, dbd_cutoff):
+    ## loop thru dbd similarity files
+    tf_simscore_dict = {}
+    for fn_tf in glob.glob(dir_dbd + "*"):
+        query_tf = os.path.basename(fn_tf)
+        tf_simscore_dict[query_tf] = {}
+        ## get similarity scores 
+        f = open(fn_tf, "r")
+        lines = f.readlines()
+        f.close()
+        for i in range(len(lines)):
+            paired_tf = lines[i].split()[0]
+            paired_pctid = float(lines[i].split()[1])
+            ## store score
+            tf_simscore_dict[query_tf][paired_tf] = paired_pctid
+    ## use max tf similarity from multiple dbds to compute weights
+    tf_weight_dict = {}
+    for query_tf in tf_simscore_dict.keys():
+        tf_weight_dict[query_tf] = {}
+        for paired_tf, score in tf_simscore_dict[query_tf].iteritems():
+            if score >= dbd_cutoff:
+                tf_weight_dict[query_tf][paired_tf] = sigmoid(score)
+    return tf_weight_dict
+
+
+def update_tf_weights(tf_weight_dict, pert_rids):
+    for query_tf in tf_weight_dict.keys():
+        for paired_tf in tf_weight_dict[query_tf].keys():
+            ## set non-pertrubed tf score to zero
+            if (not paired_tf in pert_rids) and (paired_tf != query_tf):
+                tf_weight_dict[query_tf][paired_tf] = 0
+
+
+def average_scores(network_input, tf_weight_dict, rids):
+    network_output = np.zeros(network_input.shape) 
+    # weighted average
+    for query_tf in rids:
+        query_indx = np.where(rids == query_tf)[0][0]
+        if (not query_tf in tf_weight_dict.keys()) or (len(tf_weight_dict[query_tf].keys()) < 2):
+            ## unchanged score if query tf does not have other similar tfs
+            network_output[query_indx, :] = network_input[query_indx, :]
+        else:
+            ## use allowed tfs 
+            allowed_rids = np.intersect1d(tf_weight_dict[query_tf].keys(), rids)
+            if len(allowed_rids) == 0:
+                network_output[query_indx, :] = network_input[query_indx, :]
+            else:
+                paired_tf_indices = []
+                paired_tf_weights = []
+                for paired_tf in allowed_rids:
+                    paired_tf_indices.append(np.where(rids == paired_tf)[0][0])
+                    paired_tf_weights.append(tf_weight_dict[query_tf][paired_tf])
+                # compute weighted average
+                paired_tf_weights = np.array(paired_tf_weights)
+                paired_tf_weights /= np.sum(paired_tf_weights)
+                ## update the subnetwork
+                network_sub = network_input[paired_tf_indices, :]
+                network_output[query_indx, :] = np.dot(paired_tf_weights,  network_sub)
+    return network_output
+
+
+def main(argv):
+    parsed = parse_args(argv)
+    parsed.dir_aligned_dbd += "" if parsed.dir_aligned_dbd.endswith("/") else "/"
+
+    ## get regualtor list
+    rids, pert_rids = get_regulators(parsed.fn_rids, parsed.fn_pertrubed_rids)
+
+    # parse dbd percent identity and compute weights from sigmoid fit
+    sys.stdout.write("Computing TF weights ... ")
+    if parsed.dbds_formats.lower() == "multi_dbds":
+        if parsed.fn_dbd2rids_conversion is None:
+            sys.exit("ERROR: DBD to TF conversion file must be provided if multi_dbds is used.")
+        tf_weight_dict = get_tf_weights_multi_dbds(parsed.dir_aligned_dbd, parsed.dbd_cutoff, parsed.fn_dbd2rids_conversion)
+    elif parsed.dbds_formats.lower() == 'single_dbds':
+        tf_weight_dict = get_tf_weights(parsed.dir_aligned_dbd, parsed.dbd_cutoff)
+    else:
+        sys.exit("ERROR: Improper DBD alignment score format.")
+    sys.stdout.write("DONE\n")
+
+    # filter the weights for perturbed tfs only
+    if pert_rids:
+        sys.stdout.write("Recomputing TF weights for perturbed ones only ... ")
+        update_tf_weights(tf_weight_dict, pert_rids)
+        sys.stdout.write("DONE\n")
+
+    # load network
+    sys.stdout.write("Loading network ... ")
+    network_input = np.loadtxt(parsed.fn_adjmtr_network)
+    sys.stdout.write("DONE\n")
+
+    # merge similar tfs using weighted average
+    sys.stdout.write("Weighted averaging similar TFs ... ")
+    network_output = average_scores(network_input, tf_weight_dict, rids)
+    sys.stdout.write("DONE\n")
+
+    # write weighted average network
+    sys.stdout.write("Writing network ... ")
+    write_adjmtr(parsed.fn_output, network_output)
+    sys.stdout.write("DONE\n")
 
 
 if __name__ == "__main__":
