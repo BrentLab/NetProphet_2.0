@@ -11,6 +11,7 @@ while true; do
 		sleep 5
 	else
 		touch $FLAG_FILE
+		echo "DONE"
 		break
 	fi
 done

@@ -1,20 +1,21 @@
 #!/bin/bash
-#SBATCH -n 1
-#SBATCH --mem=8G
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=8G
 #SBATCH -D ./LOG
-#SBATCH -o motif_inference_%A.out
-#SBATCH -e motif_inference_%A.err
+#SBATCH -o motif_inference_%A_%a.out
+#SBATCH -e motif_inference_%A_%a.err
+#SBATCH -J infer_motifs
 
-fn_tf_list=$1		# a list of tf names
-fn_fasta=$2 		# promoter sequence file
-dir_binned_expr=$3 	# directory of binned expression files
-log_file=$4
+FN_REGULATORS=$1	# a list of tf names
+FN_FASTA=$2 		# promoter sequence file
+DIR_BINNED_EXPR=$3 	# directory of binned expression files
+LOG_FILE=$4
 
+read regulator < <( sed -n ${SLURM_ARRAY_TASK_ID}p $FN_REGULATORS )
+set -e
 
-while read -a line
-do
-	tf=${line[0]}
-	echo "__@__PROCESSING TF: $tf"
-	perl ${FIREDIR}/fire.pl --expfiles=${dir_binned_expr}/$tf --exptype=discrete --fastafile_dna=${fn_fasta} --k=7 --jn=20 --jn_t=16 --nodups=1 --dorna=0 --dodnarna=0
-	echo $tf >> ${log_file}
-done < ${fn_tf_list}
+if [[ ! -z ${regulator} ]]; then
+	perl ${FIREDIR}/fire.pl --expfiles=${DIR_BINNED_EXPR}/$regulator --exptype=discrete --fastafile_dna=${FN_FASTA} --k=7 --jn=20 --jn_t=16 --nodups=1 --dorna=0 --dodnarna=0
+	echo $regulator >> $LOG_FILE
+fi

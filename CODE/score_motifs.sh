@@ -1,43 +1,30 @@
 #!/bin/bash
-#SBATCH -n 1
-#SBATCH --mem=8G
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=8G
 #SBATCH -D ./LOG
-#SBATCH -o motif_scoring_%A.out
-#SBATCH -e motif_scoring_%A.err
+#SBATCH -o motif_scoring_%A_%a.out
+#SBATCH -e motif_scoring_%A_%a.err
+#SBATCH -J score_motif
 
 # Input variables
-IN_TF_LIST=$1 	# list of tf names
-IN_TF_PWM=$2	# directory of tf pwm
-IN_PROMOTERS=$3	# promoter sequence file (e.g. yeast_promoter_seq/s_cerevisiae.promoters.fasta, fly_promoter_seq/rsat_dmel_upstream_-2000_+200.filtered.fasta)
-OUT_FIMO=$4		# directory of fimo alignment output 
+FN_REGULATORS=$1	# list of tf names
+FN_TF_PWM=$2		# directory of tf pwm
+FN_PROMOTERS=$3		# promoter sequence file (e.g. yeast_promoter_seq/s_cerevisiae.promoters.fasta, fly_promoter_seq/rsat_dmel_upstream_-2000_+200.filtered.fasta)
+OUT_FIMO=$4			# directory of fimo alignment output 
 LOG_FILE=$5
 
-counter=0
+read regulator < <( sed -n ${SLURM_ARRAY_TASK_ID}p $FN_REGULATORS )
+set -e
 
-while read -a line
-do
-	# process fimo scan
-	counter=$[$counter +1]
-	motif=${line[0]}
-	echo  "*** Processing $motif ... $counter"
-	
-	if [ -f $IN_TF_PWM/$motif ]; then
-		fimo -o $OUT_FIMO/$motif --thresh 5e-3 $IN_TF_PWM/$motif $IN_PROMOTERS
-		sed ' 1d ' $OUT_FIMO/$motif/fimo.txt | cut -f 1,2,7 > $OUT_FIMO/$motif/temp.txt
-		ruby ../CODE/estimate_affinity.rb -i $OUT_FIMO/$motif/temp.txt > $OUT_FIMO/${motif}.summary
-		rm -f $OUT_FIMO/$motif/cisml.css
-		rm -f $OUT_FIMO/$motif/cisml.xml
-		rm -f $OUT_FIMO/$motif/fimo.gff
-		rm -f $OUT_FIMO/$motif/fimo.html
-		rm -f $OUT_FIMO/$motif/fimo-to-html.xsl
-		rm -f $OUT_FIMO/$motif/fimo.xml
-		echo "*** Done"
+if [[ ! -z ${regulator} ]]; then
+	if [ -f $FN_TF_PWM/$regulator ]; then
+		fimo -o $OUT_FIMO/$regulator --thresh 5e-3 $FN_TF_PWM/$regulator $FN_PROMOTERS
+		sed ' 1d ' $OUT_FIMO/$regulator/fimo.txt | cut -f 1,2,7 > $OUT_FIMO/$regulator/temp.txt
+		ruby ../CODE/estimate_affinity.rb -i $OUT_FIMO/$regulator/temp.txt > $OUT_FIMO/${regulator}.summary
 	else
-		echo "*** No motif exists"
+		printf "No motif inferred for %s" $regulator
 	fi
-
-	sleep $[ ($RANDOM % 20) + 1]s #sleep between 1-20 sec to prevent write lock 
-	echo $motif >> ${LOG_FILE}
-done < $IN_TF_LIST
-
-echo "*** ALL DONE! ***"
+	sleep $[ ($RANDOM % 20) + 1]s # sleep between 1-20 sec to prevent write lock
+	echo $regulator >> $LOG_FILE
+fi
