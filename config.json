@@ -9,7 +9,6 @@
 	"FILENAME_SAMPLE_CONDITIONS": "conditions",
 	"DBD_PID_DIR": "DBD_PIDS",
 	"FILENAME_PROMOTERS": "promoter.fasta",
-	"PROMOTER_LENGTH": 600,
 	"MOTIF_THRESHOLD": 16,
 	"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr"
 }

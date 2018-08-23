@@ -23,8 +23,7 @@ rule make_directories:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.make_dir"])
 	shell:
 		"""
-		mkdir -p {output.r}; mkdir -p {output.n}; mkdir -p {output.m}; mkdir -p {output.s}; \
-		mkdir -p {output.b}; mkdir -p {output.p}; mkdir -p {output.q}; touch {output.flag}
+		printf "Step 0: Initializing ...\n"; mkdir -p {output.r}; mkdir -p {output.n}; mkdir -p {output.m}; mkdir -p {output.s}; mkdir -p {output.b}; mkdir -p {output.p}; mkdir -p {output.q}; touch {output.flag}
 		"""
 
 rule prepare_resources:
@@ -54,9 +53,7 @@ rule prepare_resources:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
 	shell:
 		"""
-		python CODE/prepare_resources.py -g {input.g} -r {input.r} -e {input.e} \
-		-c {input.c} -or {output.r} -of {output.f} -oa {output.a} \
-		-op1 {output.p1} -op2 {output.p2} -ol {output.l}; touch {output.flag}
+		python CODE/prepare_resources.py -g {input.g} -r {input.r} -e {input.e} -c {input.c} -or {output.r} -of {output.f} -oa {output.a} -op1 {output.p1} -op2 {output.p2} -ol {output.l}; touch {output.flag}; printf "[Step 0 completed]\n\n";
 		"""
 
 rule map_np_network:
@@ -84,9 +81,7 @@ rule map_np_network:
 					"networks/np.adjmtr"])
 	shell:
 		"""
-		./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} \
-		-a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} \
-		-o {input.o} -n {output.n}
+		printf "Step 1: Mapping NetProphet 1.0 network ...\nPlease check separate log for this process.\n"; ./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n};
 		"""
 
 rule map_bart_network:
@@ -103,7 +98,7 @@ rule map_bart_network:
 					"networks/bn.adjmtr"])
 	shell:
 		"""
-		sbatch CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o}
+		printf "Step 2: Mapping BART network ...\nPlease check separate log for this process.\n"; sbatch CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o};
 		"""
 
 rule weighted_average_np_network:
@@ -119,8 +114,7 @@ rule weighted_average_np_network:
 					"networks/npwa.adjmtr"])
 	shell:
 		"""
-		python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} \
-		-a {input.a} \-d 50 -t single_dbds -o {output.o}
+		printf "[Step 1 completed]\n\nStep 3.1: Weighted averaging NetProphet 1.0 scores ...\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "[Step 3.1 completed]\n\n";
 		"""
 
 rule weighted_average_bart_network:
@@ -136,8 +130,7 @@ rule weighted_average_bart_network:
 					"networks/bnwa.adjmtr"])
 	shell:
 		"""
-		python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} \
-		-a {input.a} -d 50 -t single_dbds -o {output.o}
+		printf "[Step 2 completed]\n\nStep 3.2: Weighted averaging BART scores ...\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "[Step 3.2 completed]\n\n";
 		"""
 
 rule combine_npwa_bnwa:
@@ -151,7 +144,7 @@ rule combine_npwa_bnwa:
 					"networks/npwa_bnwa.adjmtr"])
 	shell:
 		"""
-		Rscript CODE/quantile_combine_networks.r {input.n} {input.b} {output.o}
+		printf "Step 4: Combining networks ...\n"; Rscript CODE/quantile_combine_networks.r {input.n} {input.b} {output.o}; printf "[Step 4 completed]\n\n";
 		"""
 
 rule infer_motifs:
@@ -167,14 +160,11 @@ rule infer_motifs:
 					"networks/npwa_bnwa.adjmtr"]),
 		l = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					"tmp/regulator_sublists/"])
-	params:
-		m = config["PROMOTER_LENGTH"]
 	output:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.infer_motifs"])
 	shell:
 		"""
-		bash CODE/run_infer_motifs.sh {input.o} {input.a} {input.r} {input.t} \
-		{input.l} {input.p} {params.m} {output.flag}
+		printf "Step 5.1: Inferring TF binding motifs ...\n"; bash CODE/run_infer_motifs.sh {input.o} {input.a} {input.r} {input.t} {input.l} {input.p} {output.flag};
 		"""
 
 rule score_motifs:
@@ -195,8 +185,7 @@ rule score_motifs:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.score_motifs"])
 	shell:
 		"""
-		bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.l} \
-		{input.p} {output.m} {output.flag}
+		printf "[Step 5.1 completed]\n\nStep 5.2: Scoring promoters with inferred motifs ...\n"; bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.l} {input.p} {output.m} {output.flag}
 		"""
 
 rule build_motif_network:
@@ -217,8 +206,7 @@ rule build_motif_network:
 					"networks/mn.adjmtr"])
 	shell:
 		"""
-		python CODE/build_motif_network.py -i {input.i} -r {input.r} -g {input.g} \
-		-f {input.f} -t robust -v {params.v} -o {output.o}
+		printf "[Step 5.2 completed]\n\nStep 5.3: Mapping motif network ...\n"; python CODE/build_motif_network.py -i {input.i} -r {input.r} -g {input.g} -f {input.f} -t robust -v {params.v} -o {output.o}; printf "[Step 5.3 completed]\n\n";
 		"""
 
 rule assemble_final_network:
@@ -236,17 +224,6 @@ rule assemble_final_network:
 		o = NETPROPHET2_NETWORK
 	shell:
 		"""
-		python CODE/combine_networks.py -s resort -n {input.i} -b {input.m} \
-		-od {input.d} -om npwa_bnwa_mn.adjmtr; \
-		python CODE/weighted_avg_similar_dbds.py -n {input.d}/npwa_bnwa_mn.adjmtr \
-		-r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; \
-		# rm LOG/flag.*
-		# if {input.cleanup}; then
-		# 	rm LOG/*; 
-		# 	rm -rf OUTPUT/motif_inference; 
-		# 	rm -rf OUTPUT/networks; 
-		# 	rm -rf RESOURCES/tmp;
-		# fi
-		echo '### COMPLETED! ###';
+		printf "Step 6: Assemble final network ...\n"; python CODE/combine_networks.py -s resort -n {input.i} -b {input.m} -od {input.d} -om npwa_bnwa_mn.adjmtr; python CODE/weighted_avg_similar_dbds.py -n {input.d}/npwa_bnwa_mn.adjmtr -r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; printf "[Step 6 completed]\n\nNetProphet 2.0 network is ready at %s\n" {output.o};
 		"""
 
