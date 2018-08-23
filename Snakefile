@@ -48,12 +48,10 @@ rule prepare_resources:
 					"tmp/data.pert.adj"]),
 		p2 = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					"tmp/data.pert.tsv"]),
-		l = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
-					"tmp/regulator_sublists/"]),
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
 	shell:
 		"""
-		python CODE/prepare_resources.py -g {input.g} -r {input.r} -e {input.e} -c {input.c} -or {output.r} -of {output.f} -oa {output.a} -op1 {output.p1} -op2 {output.p2} -ol {output.l}; touch {output.flag}; printf "[Step 0 completed]\n\n";
+		python CODE/prepare_resources.py -g {input.g} -r {input.r} -e {input.e} -c {input.c} -or {output.r} -of {output.f} -oa {output.a} -op1 {output.p1} -op2 {output.p2}; touch {output.flag}; printf "[Step 0 completed]\n\n";
 		"""
 
 rule map_np_network:
@@ -157,14 +155,12 @@ rule infer_motifs:
 					config["FILENAME_PROMOTERS"]]),
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],""]),
 		a = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/npwa_bnwa.adjmtr"]),
-		l = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
-					"tmp/regulator_sublists/"])
+					"networks/npwa_bnwa.adjmtr"])
 	output:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.infer_motifs"])
 	shell:
 		"""
-		printf "Step 5.1: Inferring TF binding motifs ...\n"; bash CODE/run_infer_motifs.sh {input.o} {input.a} {input.r} {input.t} {input.l} {input.p} {output.flag};
+		printf "Step 5.1: Inferring TF binding motifs ...\n"; bash CODE/run_infer_motifs.sh {input.o} {input.a} {input.r} {input.t} {input.p} {output.flag};
 		"""
 
 rule score_motifs:
@@ -176,8 +172,6 @@ rule score_motifs:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],""]),
 		b = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"motif_inference/network_bins/"]),
-		l = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
-					"tmp/regulator_sublists/"]),
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.infer_motifs"])
 	output:
 		m = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
@@ -185,7 +179,7 @@ rule score_motifs:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.score_motifs"])
 	shell:
 		"""
-		printf "[Step 5.1 completed]\n\nStep 5.2: Scoring promoters with inferred motifs ...\n"; bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.l} {input.p} {output.m} {output.flag}
+		printf "[Step 5.1 completed]\n\nStep 5.2: Scoring promoters with inferred motifs ...\n"; bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.p} {output.m} {output.flag}
 		"""
 
 rule build_motif_network:

@@ -16,7 +16,7 @@ def parse_args(argv):
     parser.add_argument('-oa', '--output_allowed', dest='output_allowed')
     parser.add_argument('-op1', '--output_pert_binary', dest='output_pert_binary')
     parser.add_argument('-op2', '--output_pert_boolean', dest='output_pert_boolean')
-    parser.add_argument('-ol', '--output_regulator_lists', dest='output_regulator_lists')
+    # parser.add_argument('-ol', '--output_regulator_lists', dest='output_regulator_lists')
     parsed = parser.parse_args(argv[1:])
     return parsed
 
@@ -62,8 +62,8 @@ def main(argv):
     tmp_dir = os.path.dirname(os.path.abspath(parsed.output_reg_expr))
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-    if not os.path.exists(parsed.output_regulator_lists):
-        os.makedirs(parsed.output_regulator_lists)
+    # if not os.path.exists(parsed.output_regulator_lists):
+    #     os.makedirs(parsed.output_regulator_lists)
 
     ##load data
     genes = np.loadtxt(parsed.genes, dtype=str)
@@ -103,10 +103,10 @@ def main(argv):
     write_tsv(parsed.output_pert_boolean, pert_bool.T, nonrepeat_conditions, genes)
 
     ##split regulators into sublists with 10 in each
-    step = 5
-    for i in range(int(np.ceil(len(regulators)/float(step)))):
-        sublist = regulators[i*step:i*step+step]
-        np.savetxt(parsed.output_regulator_lists+'/'+str(i+1)+'.txt', sublist, fmt="%s")
+    # step = 5
+    # for i in range(int(np.ceil(len(regulators)/float(step)))):
+    #     sublist = regulators[i*step:i*step+step]
+    #     np.savetxt(parsed.output_regulator_lists+'/'+str(i+1)+'.txt', sublist, fmt="%s")
 
 if __name__ == "__main__":
     main(sys.argv)
