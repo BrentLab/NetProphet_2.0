@@ -17,7 +17,7 @@ rm -f ${OUTPUT_DIR}/motif_inference/motif_inference.log
 touch ${OUTPUT_DIR}/motif_inference/motif_inference.log
 
 printf "Inferring DNA binding motifs using FIRE ... "
-num_regulators=$( wc -l ${REGULATORS} )
+num_regulators=$( wc -l ${REGULATORS} | cut -d" " -f1 )
 sbatch --array=1-${num_regulators}%48 CODE/infer_motifs.sh $REGULATORS $PROMOTER ${OUTPUT_DIR}/motif_inference/network_bins/ ${OUTPUT_DIR}/motif_inference/motif_inference.log
 
 ## Check if all motifs are ready

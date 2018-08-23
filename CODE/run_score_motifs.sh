@@ -17,7 +17,7 @@ rm -f ${OUTPUT_DIR}/motif_inference/motif_scoring.log
 touch ${OUTPUT_DIR}/motif_inference/motif_scoring.log
 
 printf "Score promoters using MEME-FIMO ... "
-num_regulators=$( wc -l ${REGULATORS} )
+num_regulators=$( wc -l ${REGULATORS} | cut -d" " -f1 )
 sbatch --array=1-${num_regulators}%48 CODE/score_motifs.sh $REGULATORS $OUTPUT_DIR/motif_inference/motifs_pfm/ $PROMOTERS $OUTPUT_DIR/motif_inference/motifs_score ${OUTPUT_DIR}/motif_inference/motif_scoring.log
 
 ## Check if all motifs are ready
