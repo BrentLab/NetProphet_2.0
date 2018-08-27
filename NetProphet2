@@ -3,8 +3,14 @@
 #SBATCH -o LOG/NetProphet2_masterlog_%A.out
 #SBATCH -e LOG/NetProphet2_masterlog_%A.err
 
+CONFIGFILE=$1
+if [ ! -f $CONFIGFILE ] || [ -z $CONFIGFILE ]; then
+    echo "ERROR: Configure file does not exist!"
+    exit 0
+fi
+
 module load R/3.2.1
 module load openmpi
 
 snakemake --unlock
-snakemake --cores 2 --latency-wait 172800 -s Snakefile all
+snakemake --cores 2 --latency-wait 172800 --configfile $CONFIGFILE -s Snakefile all

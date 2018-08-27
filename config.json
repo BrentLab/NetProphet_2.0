@@ -1,6 +1,6 @@
 {
 	"NETPROPHET2_DIR": "/path/to/NetProphet_2.0",
-	"RESOURCES_DIR": "RESOURCES_FULL",
+	"RESOURCES_DIR": "RESOURCES",
 	"OUTPUT_DIR": "OUTPUT",
 	"FILENAME_EXPRESSION_DATA": "data.expr",
 	"FILENAME_DE_ADJMTR": "signed.de.adj",

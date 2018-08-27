@@ -103,7 +103,6 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 		"FILENAME_SAMPLE_CONDITIONS": "conditions",
 		"DBD_PID_DIR": "DBD_PIDS",
 		"FILENAME_PROMOTERS": "promoter.fasta",
-		"PROMOTER_LENGTH": 600,
 		"MOTIF_THRESHOLD": 16,
 		"FILENAME_NETPROPHET2_NETWORK": "netprophet2_network.adjmtr"
 	}
@@ -113,7 +112,7 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 	```
 	cd ${NETPROPHET2_DIR}
-	sbatch --mail-type=END,FAIL --mail-user=<your_email> NetProphet2
+	sbatch --mail-type=END,FAIL --mail-user=<email> NetProphet2 config.json
 	```
 
 4. Progress monitoring and debugging. After the SLURM job starts, a log file records the progress as the following.
