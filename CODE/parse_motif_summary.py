@@ -36,7 +36,7 @@ def main(argv):
             lines = open(fsum, "r").readlines()
             motif = lines[0].split('\t')[0]
             if parsed.append_mi_zscore_robustness:
-		mi = lines[0].split('\t')[3]
+                mi = lines[0].split('\t')[3]
                 z_score = lines[0].split('\t')[5]
                 robustness = lines[0].split('\t')[6]
                 writer.write("%s\t%s\t%s\t%s\t%s\n" % (tf, motif, mi, z_score, robustness))
