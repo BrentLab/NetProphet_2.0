@@ -78,7 +78,7 @@ rule map_np_network:
 					"networks/np.adjmtr"])
 	shell:
 		"""
-		printf "Step 1: Mapping NetProphet 1.0 network\nPlease check separate log for this process.\n"; ./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n}
+		printf "Step 1: Mapping NetProphet 1.0 network\n"; ./SRC/NetProphet1/netprophet -m -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n};
 		"""
 
 rule map_bart_network:
@@ -89,13 +89,14 @@ rule map_bart_network:
 					"tmp/data.fc.tsv"]),
 		p = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					"tmp/data.pert.tsv"]),
-		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
+		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
+					"networks/np.adjmtr"])
 	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/bn.adjmtr"])
 	shell:
 		"""
-		printf "Step 2: Mapping BART network\nPlease check separate log for this process.\n"; sbatch CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o};
+		printf "Step 2: Mapping BART network\n"; ./CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o};
 		"""
 
 rule weighted_average_np_network:
@@ -105,7 +106,9 @@ rule weighted_average_np_network:
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["DBD_PID_DIR"]]),
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/np.adjmtr"])
+					"networks/np.adjmtr"]),
+		b = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
+					"networks/bn.adjmtr"])
 	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/npwa.adjmtr"])
@@ -121,7 +124,9 @@ rule weighted_average_bart_network:
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["DBD_PID_DIR"]]),
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/bn.adjmtr"])
+					"networks/bn.adjmtr"]),
+		b = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
+					"networks/npwa.adjmtr"])
 	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/bnwa.adjmtr"])

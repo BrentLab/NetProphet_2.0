@@ -3,14 +3,73 @@
 #SBATCH -o LOG/NetProphet2_masterlog_%A.out
 #SBATCH -e LOG/NetProphet2_masterlog_%A.err
 
-CONFIGFILE=$1
-if [ ! -f $CONFIGFILE ] || [ -z $CONFIGFILE ]; then
-    echo "ERROR: Configure file does not exist!"
-    exit 0
+usage() {
+cat << EOF
+NetProphet2:
+	NetProphet2 is a “data light” algorithm for mapping transcription factor regulatory network.
+
+Usage:
+	[Parallel Run]
+		sbatch --mail-type=END,FAIL --mail-user=<your_email> NetProphet2 -f <config_file>
+	[Serial Run]
+		./NetProphet2 -s -f <config_file>
+Options:
+	-s		Use serial process if SLURM is not available.
+	-c		Custom config file.
+EOF
+}
+
+checkFileParam(){
+	if [ -z $2 ]; then
+		echo "Option: -${1} is not defined!"
+		usage
+		exit 1
+	fi
+	if [ ! -f $2 ]; then
+		echo "ERROR: The argument of option -${1} cannot be found: ${2}"
+		usage
+		exit 1
+	fi
+}
+
+USE_SERIAL=false
+CONFIG_FILE=
+
+while getopts “:hsf:” OPTION
+do
+	case $OPTION in
+		h)
+			usage
+			exit 0
+			;;
+		s)
+			USE_SERIAL=true
+			;;
+		f)
+			CONFIG_FILE=$OPTARG
+			checkFileParam ${OPTION} ${OPTARG}
+			;;
+		?)
+			usage
+			exit
+			;;
+	esac
+done
+
+if [[ -z $CONFIG_FILE ]]; then
+	echo "ERROR: You must specify arguments for options: -f"
+	# usage
+	exit 1
 fi
 
-module load R/3.2.1
-module load openmpi
-
 snakemake --unlock
-snakemake --cores 2 --latency-wait 172800 --configfile $CONFIGFILE -s Snakefile all
+
+if $USE_SERIAL; then
+	echo "Running NetProphet2 in parallel fashion."
+	snakemake --cores 2 --latency-wait 30 --configfile $CONFIG_FILE -s Snakefile.serial weighted_average_bart_network
+else
+	echo "Running NetProphet2 in serial fashion."
+	module load R/3.2.1
+	module load openmpi
+	snakemake --cores 2 --latency-wait 172800 --configfile $CONFIG_FILE -s Snakefile all
+fi

@@ -1,5 +1,6 @@
 .DS_Store
 .snakemake/
+config_*.json
 CODE/*.pyc
 SRC/FIRE-1.1a/
 SRC/meme/
