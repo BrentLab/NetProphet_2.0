@@ -80,7 +80,7 @@ lasso_component <- uniform.solution[[1]]
 write.table(lasso_component,file.path(outputDirectory,lassoAdjMtrFileName),row.names=FALSE,col.names=FALSE,quote=FALSE)
 
 ## Perform model averaging to get final NetProphet Predictions
-source("NetProphet1/combine_models.r")
+source("combine_models.r")
 
 # if(length(args) == 13 & file.exists(regulatorGeneNamesFileName) & file.exists(targetGeneNamesFileName)){
 # 	source("make_adjacency_list.r")

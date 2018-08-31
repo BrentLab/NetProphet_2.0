@@ -156,7 +156,8 @@ then
 	sbatch run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
 else
 	## Running in the sequential fashion
-	R --no-save --slave --no-init-file --args ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile} < run_netprophet.r
+	cd $NetProphetDir
+	R --no-save --slave --no-init-file --args ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile} ${NetProphetDir} < run_netprophet.r
 fi
 
 cd ${currentDirectory}
