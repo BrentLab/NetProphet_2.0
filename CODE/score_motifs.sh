@@ -23,7 +23,7 @@ if [[ ! -z ${regulator} ]]; then
 		sed ' 1d ' $OUT_FIMO/$regulator/fimo.txt | cut -f 1,2,7 > $OUT_FIMO/$regulator/temp.txt
 		ruby ../CODE/estimate_affinity.rb -i $OUT_FIMO/$regulator/temp.txt > $OUT_FIMO/${regulator}.summary
 	else
-		printf "No motif inferred for %s" $regulator
+		printf "No motif inferred for %s\n" $regulator
 	fi
 	sleep $[ ($RANDOM % 20) + 1]s # sleep between 1-20 sec to prevent write lock
 	echo $regulator >> $LOG_FILE
