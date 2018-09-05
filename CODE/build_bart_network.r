@@ -5,7 +5,7 @@ if (!require("stats")) try(install.packages("stats"));
 if (!require("matrixStats")) try(install.packages("matrixStats"));
 if (!require("Matrix")) try(install.packages("Matrix"));
 if (!require("abind")) try(install.packages("abind"));
-# if (!require("restorepoint")) try(install.packages("restorepoint"));
+# if (!require("restorepoint")) try(install.packages("restorepoint")); ## deprecated
 
 getBartNetwork <- function(tgtLevel, tfLevel, regMat, unperturbedTfLevel, nBin = 3, ...) {
 	# use BART to generate a network structure prediction
@@ -266,12 +266,10 @@ cbindCountingNull <- function(colList, default = NA) { # column-binding elements
 save.image();
 
 # formating input arguments
-argStringList <- tail(commandArgs(), -2);
-# print(argStringList);
+argStringList <- commandArgs()[7:length(commandArgs())]
 argTable <- read.table(text = unlist(argStringList), sep = "=", header = 0, stringsAsFactors = FALSE, row.names = 1);
 write.table(t(argTable), file = textConnection("transposedArgString", open = "w"), quote= FALSE);
 argList <- as.list(read.table(text = transposedArgString, stringsAsFactors = FALSE));
-print(argList);
 
 # reading data
 fc <- as.matrix(read.table(argList$fcFile, check.names=FALSE)); # training fold change expression matrix, rows are samples, cols are genes
@@ -296,8 +294,12 @@ regMat[availableTfName, ] <- TRUE; # only allow a target to be regulated by TFs 
 regMat[cbind(availableTfName, availableTfName)] <- FALSE; # disallow autoregulation
 
 if (!is.null(argList$saveTo)) saveProcessTo <- paste(argList$saveTo, ".bartProcess.RData", sep = "") else saveProcessTo <- NULL;
-if (!is.null(argList$useMpi) & argList$useMpi) mpiComm <- 1 else mpiComm <- NULL;
-if (!is.null(argList$mpiBlockSize) & argList$mpiBlockSize) mpiBlockSize <- argList$mpiBlockSize else mpiBlockSize <- 1; 
+if (!is.null(argList$useMpi))
+	if (argList$useMpi)
+		mpiComm <- 1 else mpiComm <- NULL;
+if (!is.null(argList$mpiBlockSize))
+	if (argList$mpiBlockSize)
+		mpiBlockSize <- argList$mpiBlockSize else mpiBlockSize <- 1; 
 
 #try(Sys.setenv(OMPI_MCA_btl_tcp_if_include="eth0")); # otherwise mpi freezes, not sure why. Please ask IT support for details
 result <- getBartNetwork(
