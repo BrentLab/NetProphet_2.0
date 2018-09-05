@@ -55,24 +55,22 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	```
 
 5. Install R packages
+	* lars v0.9-8
+	* BayesTree v0.3-1.3
+	* [optional] Rmpi v0.5-9 (if MPI is available in your system)
 
 	```
 	cd ${NETPROPHET2_DIR}/SRC/R_pkgs/
-	module load R/3.2.1  #if not loaded by default
+	module load R/3.2.1  # SLURM specific, if not loaded by default
+	R
 	```
-	
-	1. Install the following package version: 
-		* lars v0.9-8
-		* BayesTree v0.3-1.3
+
+	Install the following packages:
 
 	```R
 	> install.packages("BayesTree_0.3-1.3.tar.gz", lib="<your_local_R_lib>") 
 	> install.packages("lars_0.9-8.tar.gz", lib="<your_local_R_lib>")
-	```
-	
-	2. **[Optional]** Install Rmpi, if not available in your system.
-	```R
-	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>")
+	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>") # if MPI available
 	```
 
 ### EXAMPLE USAGE
@@ -108,11 +106,18 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 	}
 	```
 
-3. Run NetProphet 2.0.
+3. Run NetProphet 2.0 in SLURM parallelized fashion with optionally receiving email update on the process.
 
 	```
 	cd ${NETPROPHET2_DIR}
-	sbatch --mail-type=END,FAIL --mail-user=<email> NetProphet2 config.json
+	sbatch [--mail-type=END,FAIL --mail-user=<your_email>] NetProphet2 -f <config_file>
+	```
+
+	Alternatively, run NetProphet 2.0 in serial processing fashion with `-s` flag (for serial).
+
+	```
+	cd ${NETPROPHET2_DIR}
+	./NetProphet2 -s -f <config_file>
 	```
 
 4. Progress monitoring and debugging. After the SLURM job starts, a log file records the progress as the following.

@@ -10,12 +10,15 @@ NetProphet2:
 
 Usage:
 	[Parallel Run]
-		sbatch --mail-type=END,FAIL --mail-user=<your_email> NetProphet2 -f <config_file>
+		sbatch [slurm-option] NetProphet2 -f <config_file>
 	[Serial Run]
 		./NetProphet2 -s -f <config_file>
 Options:
-	-s		Use serial process if SLURM is not available.
-	-c		Custom config file.
+	-s							Use serial process if SLURM is not available.
+	-c							Custom config file.
+[Slurm-options]:
+	--mail-type=<type>			Types are NONE, BEGIN, END, FAIL, REQUEUE, ALL. Use "," as delimiter.
+	--mail-user=<your_email>	Email address to recieve updates.
 EOF
 }
 
@@ -58,7 +61,7 @@ done
 
 if [[ -z $CONFIG_FILE ]]; then
 	echo "ERROR: You must specify arguments for options: -f"
-	# usage
+	usage
 	exit 1
 fi
 
@@ -66,7 +69,7 @@ snakemake --unlock
 
 if $USE_SERIAL; then
 	echo "Running NetProphet2 in parallel fashion."
-	snakemake --cores 2 --latency-wait 30 --configfile $CONFIG_FILE -s Snakefile.serial weighted_average_bart_network
+	snakemake --cores 2 --latency-wait 30 --configfile $CONFIG_FILE -s Snakefile.serial all
 else
 	echo "Running NetProphet2 in serial fashion."
 	module load R/3.2.1
