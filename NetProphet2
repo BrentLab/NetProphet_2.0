@@ -69,10 +69,10 @@ snakemake --unlock
 
 if $USE_SERIAL; then
 	echo "Running NetProphet2 in parallel fashion."
-	snakemake --cores 2 --latency-wait 30 --configfile $CONFIG_FILE -s Snakefile.serial all
+	snakemake --cores 2 --latency-wait 30 --configfile $CONFIG_FILE -s run_serial.Snakefile all
 else
 	echo "Running NetProphet2 in serial fashion."
 	module load R/3.2.1
 	module load openmpi
-	snakemake --cores 2 --latency-wait 172800 --configfile $CONFIG_FILE -s Snakefile all
+	snakemake --cores 2 --latency-wait 172800 --configfile $CONFIG_FILE -s run_parallel.Snakefile all
 fi

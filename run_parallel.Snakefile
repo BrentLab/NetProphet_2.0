@@ -78,7 +78,7 @@ rule map_np_network:
 					"networks/np.adjmtr"])
 	shell:
 		"""
-		printf "Step 1: Mapping NetProphet 1.0 network\n"; ./SRC/NetProphet1/netprophet -m -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n};
+		printf "Step 1: Mapping NetProphet 1.0 network\nPlease check separate log for this process.\n"; ./SRC/NetProphet1/netprophet -m -c -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n}
 		"""
 
 rule map_bart_network:
@@ -89,14 +89,13 @@ rule map_bart_network:
 					"tmp/data.fc.tsv"]),
 		p = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					"tmp/data.pert.tsv"]),
-		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/np.adjmtr"])
+		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.prepare_resources"])
 	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/bn.adjmtr"])
 	shell:
 		"""
-		printf "Step 2: Mapping BART network\n"; ./CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o} true;
+		printf "Step 2: Mapping BART network\nPlease check separate log for this process.\n"; sbatch CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o} false;
 		"""
 
 rule weighted_average_np_network:
@@ -106,9 +105,7 @@ rule weighted_average_np_network:
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["DBD_PID_DIR"]]),
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/np.adjmtr"]),
-		b = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/bn.adjmtr"])
+					"networks/np.adjmtr"])
 	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/npwa.adjmtr"])
@@ -124,9 +121,7 @@ rule weighted_average_bart_network:
 		a = "/".join([config["NETPROPHET2_DIR"],config["RESOURCES_DIR"],
 					config["DBD_PID_DIR"]]),
 		n = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/bn.adjmtr"]),
-		b = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
-					"networks/npwa.adjmtr"])
+					"networks/bn.adjmtr"])
 	output:
 		o = "/".join([config["NETPROPHET2_DIR"],config["OUTPUT_DIR"],
 					"networks/bnwa.adjmtr"])
@@ -164,7 +159,7 @@ rule infer_motifs:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.infer_motifs"])
 	shell:
 		"""
-		printf "Step 5.1: Inferring TF binding motifs\n"; bash CODE/run_infer_motifs.sh {input.o} {input.a} {input.r} {input.t} {input.p} {output.flag};
+		printf "Step 5.1: Inferring TF binding motifs\n"; ./CODE/run_infer_motifs.sh {input.o} {input.a} {input.r} {input.t} {input.p} {output.flag} false;
 		"""
 
 rule score_motifs:
@@ -183,7 +178,7 @@ rule score_motifs:
 		flag = "/".join([config["NETPROPHET2_DIR"],"LOG/flag.score_motifs"])
 	shell:
 		"""
-		printf "[Step 5.1 completed]\n\nStep 5.2: Scoring promoters with inferred motifs\n"; bash CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.p} {output.m} {output.flag}
+		printf "[Step 5.1 completed]\n\nStep 5.2: Scoring promoters with inferred motifs\n"; ./CODE/run_score_motifs.sh {input.o} {input.b} {input.r} {input.p} {output.m} {output.flag} false;
 		"""
 
 rule build_motif_network:
