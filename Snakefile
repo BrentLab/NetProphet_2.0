@@ -95,7 +95,7 @@ rule map_bart_network:
 					"networks/bn.adjmtr"])
 	shell:
 		"""
-		printf "Step 2: Mapping BART network\nPlease check separate log for this process.\n"; sbatch CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o};
+		printf "Step 2: Mapping BART network\nPlease check separate log for this process.\n"; sbatch CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o} false;
 		"""
 
 rule weighted_average_np_network:
