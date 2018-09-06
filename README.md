@@ -6,11 +6,12 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 ### SYSTEM REQUIREMENTS
 
-* Slurm workload manager (tested on v15.08.7)
-* Open MPI (tested on v1.8.8)
 * R (>= v3.2, tested on v3.2.1)
 * Python (>= v2.7, tested on v2.7.10)
 * Python (>= v3.4, tested on 3.4.3+)
+[Optional, only required for parallel processing]
+* Slurm workload manager (tested on v15.08.7)
+* Open MPI (tested on v1.8.8)
 
 ### INSTALLATION INSTRUCTIONS
 

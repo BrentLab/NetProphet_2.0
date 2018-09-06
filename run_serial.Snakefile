@@ -78,7 +78,7 @@ rule map_np_network:
 					"networks/np.adjmtr"])
 	shell:
 		"""
-		printf "\e[1mStep 1: Mapping NetProphet 1.0 network\e[0m\n"; ./SRC/NetProphet1/netprophet -m -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n};
+		printf "\e[1mStep 1: Mapping NetProphet 1.0 network\e[0m\n"; ./SRC/NetProphet1/netprophet -m -u {input.u} -t {input.t} -r {input.r} -a {input.a} -p {input.p} -d {input.d} -g {input.g} -f {input.f} -o {input.o} -n {output.n}; printf "\e[1m[Step 1 completed]\e[0m\n\n";
 		"""
 
 rule map_bart_network:
@@ -96,7 +96,7 @@ rule map_bart_network:
 					"networks/bn.adjmtr"])
 	shell:
 		"""
-		printf "\e[1mStep 2: Mapping BART network\e[0m\n"; ./CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o} true;
+		printf "\e[1mStep 2: Mapping BART network\e[0m\n"; ./CODE/run_build_bart_network.sh {input.t} {input.p} {input.f} {output.o} true; printf "\e[1m[Step 2 completed]\e[0m\n\n";
 		"""
 
 rule weighted_average_np_network:
@@ -114,7 +114,7 @@ rule weighted_average_np_network:
 					"networks/npwa.adjmtr"])
 	shell:
 		"""
-		printf "\e[1m[Step 1 completed]\e[0m\n\n\e[1mStep 3.1: Weighted averaging NetProphet 1.0 scores\e[0m\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "[Step 3.1 completed]\n\n";
+		printf "\e[1mStep 3.1: Weighted averaging NetProphet 1.0 scores\e[0m\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "\e[1m[Step 3.1 completed]\e[0m\n\n";
 		"""
 
 rule weighted_average_bart_network:
@@ -132,7 +132,7 @@ rule weighted_average_bart_network:
 					"networks/bnwa.adjmtr"])
 	shell:
 		"""
-		printf "\e[1m[Step 2 completed]\e[0m\n\n\e[1mStep 3.2: Weighted averaging BART scores\e[0m\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "\e[1m[Step 3.2 completed]\e[0m\n\n";
+		printf "\e[1mStep 3.2: Weighted averaging BART scores\e[0m\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "\e[1m[Step 3.2 completed]\e[0m\n\n";
 		"""
 
 rule combine_npwa_bnwa:
