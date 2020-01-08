@@ -70,8 +70,8 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 
 	```R
 	> install.packages("BayesTree_0.3-1.3.tar.gz", lib="<your_local_R_lib>") 
-	> install.packages("lars_0.9-8.tar.gz", lib="<your_local_R_lib>")
-	> install.packages("Rmpi_0.5-9.tar.gz", lib="<your_local_R_lib>") # if MPI available
+	> install.packages("lars_0.9-8.tar.gz", lib="<your_R_lib>")
+	> install.packages("Rmpi_0.6-3.tar.gz", lib="<your_R_lib>", configure.args=c("--with‌​-Rmpi-type=OPENMPI", "--with-Rmpi-include=<your_mpi_lib>")) # For example, use --with-Rmpi-include=/opt/apps/openmpi/1.8.8/include/
 	```
 
 ### EXAMPLE USAGE
