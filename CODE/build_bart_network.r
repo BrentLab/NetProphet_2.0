@@ -133,11 +133,38 @@ bartMultiresponse <- function(x.train, y.train, x.test = NULL, allowed, simplify
 	}
 	#
 	if (missing(mpiComm) || is.null(mpiComm)) { # calculate without invoking mpi
-		for (i in sequence(nResponse)) {
-			if (verbose) print(paste(i, "/", nResponse, responseName[i]));
-			bartedList[[responseName[i]]] <- try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
-			if (!missing(saveTo) && !is.null(saveTo)) save(bartedList, file = saveTo);
+		require("foreach");
+		require("doParallel");
+		## define pool
+		pool <- makeCluster(min(11, detectCores()[1]-1), outfile="")
+		registerDoParallel(pool)
+		print(pool)
+
+		## pre-convert list names
+		gene2indx <- list()
+		for (i in seq(nResponse)) {
+			gene2indx[[responseName[i]]] <- i;
 		}
+		## parallel for loop
+		pb <- txtProgressBar(0, nResponse, style=3)
+		bartedList <- foreach(i=gene2indx, 
+							.inorder=T, 
+							.final=function(x) setNames(x, names(gene2indx)),
+							.export=c("bartRobust")
+							) %dopar% {
+			# if (verbose) print(paste(i, "/", nResponse, responseName[i]));
+			if (verbose) setTxtProgressBar(pb, i);
+			try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
+			}
+		## exit pool
+		stopCluster(pool)
+
+		## old serial processing
+		# for (i in sequence(nResponse)) {
+		# 	if (verbose) print(paste(i, "/", nResponse, responseName[i]));
+		# 	bartedList[[responseName[i]]] <- try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
+		# 	if (!missing(saveTo) && !is.null(saveTo)) save(bartedList, file = saveTo);
+		# }
 	} else { # calculate with mpi
 		require("Rmpi");
 		# try(Sys.setenv(OMPI_MCA_btl_tcp_if_include="eth0"));
