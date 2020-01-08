@@ -111,7 +111,7 @@ rule weighted_average_np_network:
 					"networks/npwa.adjmtr"])
 	shell:
 		"""
-		printf "[Step 1 completed]\n\nStep 3.1: Weighted averaging NetProphet 1.0 scores\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "[Step 3.1 completed]\n\n";
+		printf "[Step 1 completed]\n\nStep 3.1: Weighted averaging NetProphet 1.0 scores\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; printf "[Step 3.1 completed]\n\n";
 		"""
 
 rule weighted_average_bart_network:
@@ -127,7 +127,7 @@ rule weighted_average_bart_network:
 					"networks/bnwa.adjmtr"])
 	shell:
 		"""
-		printf "[Step 2 completed]\n\nStep 3.2: Weighted averaging BART scores\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -t single_dbds -o {output.o}; printf "[Step 3.2 completed]\n\n";
+		printf "[Step 2 completed]\n\nStep 3.2: Weighted averaging BART scores\n"; python CODE/weighted_avg_similar_dbds.py -n {input.n} -r {input.r} -a {input.a} -d 50 -f single_dbds -o {output.o}; printf "[Step 3.2 completed]\n\n";
 		"""
 
 rule combine_npwa_bnwa:
