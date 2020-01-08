@@ -29,7 +29,7 @@ def main(argv):
     # parse the lists of tfs and inferred motifs
     fns = glob.glob(parsed.dir_input + "*_FIRE")
     for fn in fns:
-        tf = os.path.basename(fn).strip('_FIRE')
+        tf = os.path.basename(fn).split('_FIRE')[0]
         # parse FIRE summary file  
         fsum = fn + "/DNA/" + tf + ".summary"
         if os.path.isfile(fsum) and os.stat(fsum).st_size > 0:
