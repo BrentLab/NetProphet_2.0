@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH -n 11
 #SBATCH --cpus-per-task=2
-#SBATCH --mem-per-cpu=10G
 #SBATCH -D ./SRC/NetProphet1/
 #SBATCH -o ../../LOG/map_netprophet1_network_%A.out
 #SBATCH -e ../../LOG/map_netprophet1_network_%A.err
@@ -19,6 +18,10 @@ outputDirectory=${10}
 combinedAdjLstFileName=${11}
 regulatorGeneNamesFileName=${12}
 targetGeneNamesFileName=${13}
+
+
+module load R/3.2.1
+module load openmpi/1.8.8
 
 echo "calling mpirun now, SLURM_NTASKS=${SLURM_NTASKS}"
 
