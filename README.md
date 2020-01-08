@@ -58,12 +58,12 @@ NetProphet 2.0 is a second-generation “data light” TF-network mapping algori
 5. Install R packages
 	* lars v0.9-8
 	* BayesTree v0.3-1.3
-	* [optional] Rmpi v0.5-9 (if MPI is available in your system)
+	* [optional] Rmpi v0.6-3 (if MPI is available in your system)
 
 	```
 	cd ${NETPROPHET2_DIR}/SRC/R_pkgs/
 	module load R/3.2.1  # SLURM specific, if not loaded by default
-	R
+	R # Start an interactive R session
 	```
 
 	Install the following packages:
