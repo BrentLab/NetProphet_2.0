@@ -48,7 +48,7 @@ This guide will show you how to build a NetProphet container using Singularity a
 
 ### RUNNING CONTAINER
 
-1. Example usage:
+1. Running locally:
 
 	```
     singularity run -B <path to NetProphet_2.0>:/NetProphet_2.0 np2image.sif NetProphet2 -s -f config.json
@@ -56,6 +56,22 @@ This guide will show you how to build a NetProphet container using Singularity a
 
     This will attach the local NetProphet_2.0 directory to the image at location /NetProphet_2.0 and execute NetProphet2 in serial mode.
 
+
+2. Running on cluster:
+
+    NetProphet uses slurm to submit jobs to the HPC cluster.  
+    Assuming you have slurm installed on the cluster in `/apps/sched/slurm/[ver]`,  
+    you can mount cluster's slurm installation on the container:
+
+    ```
+    singularity shell -B /apps/sched/slurm/[ver] -B /etc/slurm
+    ```
+
+    Then execute NetProphet in parallel mode using slurm:
+
+    ```
+    singularity exec np2image.sif sbatch [--mail-type=END,FAIL --mail-user=<your_email>] NetProphet2 -f <config_file>
+    ```
     
 
 
