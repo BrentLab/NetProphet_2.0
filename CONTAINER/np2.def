@@ -8,16 +8,16 @@ From: ubuntu:18.04
 %environment
     export LC_ALL=C
     export CONDA=/usr/miniconda3/bin
-	export NETPROPHET2_DIR=/NetProphet_2.0 
-	export R_LIBS=/R_lib
-	export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/
-	export PATH=$CONDA:$NETPROPHET2_DIR:$NETPROPHET2_DIR/SRC/meme/bin:$NETPROPHET2_DIR/SRC/meme/libexec/meme-5.1.0:/.local/bin:$FIREDIR:$PATH
+    export NETPROPHET2_DIR=/NetProphet_2.0 
+    export R_LIBS=/R_lib
+    export FIREDIR=${NETPROPHET2_DIR}/SRC/FIRE-1.1a/
+    export PATH=$CONDA:$NETPROPHET2_DIR:$NETPROPHET2_DIR/SRC/meme/bin:$NETPROPHET2_DIR/SRC/meme/libexec/meme-5.1.0:/.local/bin:$FIREDIR:$PATH
 
 %post
-	# Update OS
-	apt-get update
+    # Update OS
+    apt-get update
 
-	# Install basic tools
+    # Install basic tools
     apt-get install -y --no-install-recommends git gfortran libpcre3 libpcre3-dev make zlib1g-dev libz-dev bzip2 unzip ca-certificates curl wget vim
     apt-get clean
 
@@ -25,44 +25,44 @@ From: ubuntu:18.04
     curl https://repo.continuum.io/miniconda/Miniconda3-4.2.11-Linux-x86_64.sh -O
     bash Miniconda3-4.2.11-Linux-x86_64.sh -bf -p /usr/miniconda3/
     rm Miniconda3-4.2.11-Linux-x86_64.sh
-	export PATH=/usr/miniconda3/bin:$PATH
+    export PATH=/usr/miniconda3/bin:$PATH
 
     # Configure conda:
     conda config --add channels defaults
     conda config --add channels bioconda
     conda config --add channels conda-forge
 
-	# Create conda environment for NetProphet
-	conda install -c r r=3.2.1 readline=6.2 pcre gxx_linux-64 snakemake=3.8.2 numpy=1.15
+    # Create conda environment for NetProphet
+    conda install -c r r=3.2.1 readline=6.2 pcre gxx_linux-64 snakemake=3.8.2 numpy=1.15
 
-	# Clone NetProphet2 repo
-	git clone https://github.com/ekotysh/NetProphet_2.0.git
+    # Clone NetProphet2 repo
+    git clone https://github.com/ekotysh/NetProphet_2.0.git
 
-	# Install frozen NetProphet dependencies, FIRE and MEME
-	cd /NetProphet_2.0/SRC/
-	unzip -q FIRE-1.1a.zip
-	cd FIRE-1.1a/
-	chmod 775 configure
-	./configure
-	make
+    # Install frozen NetProphet dependencies, FIRE and MEME
+    cd /NetProphet_2.0/SRC/
+    unzip -q FIRE-1.1a.zip
+    cd FIRE-1.1a/
+    chmod 775 configure
+    ./configure
+    make
 
-	cd /NetProphet_2.0/SRC/
-	mkdir -p meme/
-	tar zxf meme-5.1.0.tar.gz
-	cd meme-5.1.0
-	./configure --prefix=/NetProphet_2.0/SRC/meme --with-url=http://meme-suite.org/ --enable-build-libxml2 --enable-build-libxslt
-	make
-	make install
+    cd /NetProphet_2.0/SRC/
+    mkdir -p meme/
+    tar zxf meme-5.1.0.tar.gz
+    cd meme-5.1.0
+    ./configure --prefix=/NetProphet_2.0/SRC/meme --with-url=http://meme-suite.org/ --enable-build-libxml2 --enable-build-libxslt
+    make
+    make install
 
 %test
     export CONDA=/usr/miniconda3/bin
-	export NETPROPHET2_DIR=/NetProphet_2.0 
-	export PATH=$CONDA:$NETPROPHET2_DIR:$PATH
+    export NETPROPHET2_DIR=/NetProphet_2.0 
+    export PATH=$CONDA:$NETPROPHET2_DIR:$PATH
 
-	echo "[Verifying Image] Checking Conda..."
-	conda info
+    echo "[Verifying Image] Checking Conda..."
+    conda info
 
 %runscript
-	. /usr/miniconda3/etc/profile.d/conda.sh
-	cd /NetProphet_2.0
+    . /usr/miniconda3/etc/profile.d/conda.sh
+    cd /NetProphet_2.0
     exec /bin/bash "$@"
