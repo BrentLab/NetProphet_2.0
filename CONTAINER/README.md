@@ -1,6 +1,6 @@
-# BUILDING A NETPROPHET 2.0 CONTAINER
+# NETPROPHET 2.0 CONTAINER
 
-We use [Singularity](https://sylabs.io/singularity/) to run NetProphet in a container environment.
+We use [Singularity](https://sylabs.io/singularity/) to run NetProphet in a container environment.  
 Provided is the definition file that allows you to easily build a distributable NetProphet image.
 
 Some useful applications of running in a container:
@@ -48,13 +48,13 @@ This guide will show you how to build a NetProphet container using Singularity a
 
 ### RUNNING CONTAINER
 
-1. Executing:
+1. Example usage:
 
 	```
     singularity run -B <path to NetProphet_2.0>:/NetProphet_2.0 np2image.sif NetProphet2 -s -f config.json
 	```
 
-    This will attach the local NetProphet_2.0 directory to the image at location /NetProphet_2.0 on the image and execute the NetProphet2 command in serial mode.
+    This will attach the local NetProphet_2.0 directory to the image at location /NetProphet_2.0 and execute NetProphet2 in serial mode.
 
     
 
