@@ -36,7 +36,8 @@ From: ubuntu:18.04
     conda install -c r r=3.2.1 readline=6.2 pcre gxx_linux-64 snakemake=3.8.2 numpy=1.15
 
     # Clone NetProphet2 repo
-    git clone https://github.com/ekotysh/NetProphet_2.0.git
+    git clone https://github.com/yiming-kang/NetProphet_2.0.git
+    git checkout singularity
 
     # Install frozen NetProphet dependencies, FIRE and MEME
     cd /NetProphet_2.0/SRC/

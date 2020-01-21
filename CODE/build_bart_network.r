@@ -1,10 +1,12 @@
-if (!require("R.oo")) try(install.packages("R.oo"));
-if (!require("Rmpi")) try(install.packages("Rmpi"));
-if (!require("BayesTree")) try(install.packages("BayesTree"));
-if (!require("stats")) try(install.packages("stats"));
-if (!require("matrixStats")) try(install.packages("matrixStats"));
-if (!require("Matrix")) try(install.packages("Matrix"));
-if (!require("abind")) try(install.packages("abind"));
+if (!require("R.oo")) try(install.packages("R.oo", repos='http://cran.us.r-project.org'));
+if (!require("Rmpi")) try(install.packages("Rmpi", repos='http://cran.us.r-project.org'));
+if (!require("BayesTree")) try(install.packages("BayesTree", repos='http://cran.us.r-project.org'));
+if (!require("stats")) try(install.packages("stats", repos='http://cran.us.r-project.org'));
+if (!require("matrixStats")) try(install.packages("matrixStats", repos='http://cran.us.r-project.org'));
+if (!require("Matrix")) try(install.packages("Matrix", repos='http://cran.us.r-project.org'));
+if (!require("abind")) try(install.packages("abind", repos='http://cran.us.r-project.org'));
+
+
 # if (!require("restorepoint")) try(install.packages("restorepoint")); ## deprecated
 
 getBartNetwork <- function(tgtLevel, tfLevel, regMat, unperturbedTfLevel, nBin = 3, ...) {
@@ -133,38 +135,40 @@ bartMultiresponse <- function(x.train, y.train, x.test = NULL, allowed, simplify
 	}
 	#
 	if (missing(mpiComm) || is.null(mpiComm)) { # calculate without invoking mpi
-		require("foreach");
-		require("doParallel");
-		## define pool
-		pool <- makeCluster(min(11, detectCores()[1]-1), outfile="")
-		registerDoParallel(pool)
-		print(pool)
+        
+        # This still requires Rmpi, commenting out
+		#require("foreach");
+		#require("doParallel");
+		### define pool
+		#pool <- makeCluster(min(11, detectCores()[1]-1), outfile="")
+		#registerDoParallel(pool)
+		#print(pool)
 
-		## pre-convert list names
-		gene2indx <- list()
-		for (i in seq(nResponse)) {
-			gene2indx[[responseName[i]]] <- i;
-		}
-		## parallel for loop
-		pb <- txtProgressBar(0, nResponse, style=3)
-		bartedList <- foreach(i=gene2indx, 
-							.inorder=T, 
-							.final=function(x) setNames(x, names(gene2indx)),
-							.export=c("bartRobust")
-							) %dopar% {
-			# if (verbose) print(paste(i, "/", nResponse, responseName[i]));
-			if (verbose) setTxtProgressBar(pb, i);
-			try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
-			}
-		## exit pool
-		stopCluster(pool)
+		### pre-convert list names
+		#gene2indx <- list()
+		#for (i in seq(nResponse)) {
+		#	gene2indx[[responseName[i]]] <- i;
+		#}
+		### parallel for loop
+		#pb <- txtProgressBar(0, nResponse, style=3)
+		#bartedList <- foreach(i=gene2indx, 
+		#					.inorder=T, 
+		#					.final=function(x) setNames(x, names(gene2indx)),
+		#					.export=c("bartRobust")
+		#					) %dopar% {
+		#	# if (verbose) print(paste(i, "/", nResponse, responseName[i]));
+		#	if (verbose) setTxtProgressBar(pb, i);
+		#	try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
+		#	}
+		### exit pool
+		#stopCluster(pool)
 
 		## old serial processing
-		# for (i in sequence(nResponse)) {
-		# 	if (verbose) print(paste(i, "/", nResponse, responseName[i]));
-		# 	bartedList[[responseName[i]]] <- try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
-		# 	if (!missing(saveTo) && !is.null(saveTo)) save(bartedList, file = saveTo);
-		# }
+		for (i in sequence(nResponse)) {
+			if (verbose) print(paste(i, "/", nResponse, responseName[i]));
+			bartedList[[responseName[i]]] <- try(applicand(i, simplify = simplify, verbose = pmax(verbose - 1, 0), ...));
+			if (!missing(saveTo) && !is.null(saveTo)) save(bartedList, file = saveTo);
+		}
 	} else { # calculate with mpi
 		require("Rmpi");
 		# try(Sys.setenv(OMPI_MCA_btl_tcp_if_include="eth0"));
