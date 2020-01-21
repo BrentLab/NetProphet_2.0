@@ -36,7 +36,7 @@ def process_score(fi, fo, num_bin):
             line_split = line.split();
             dict_target[line_split[0]] = float(line_split[1])
     # sort dictionary based on score
-    dict_target_sorted = sorted(dict_target.iteritems(), key=operator.itemgetter(1))
+    dict_target_sorted = sorted(dict_target.items(), key=operator.itemgetter(1))
     dict_target_sorted.reverse()
 
     # get score intervals
