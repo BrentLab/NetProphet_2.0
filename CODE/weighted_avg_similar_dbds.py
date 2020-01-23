@@ -121,7 +121,7 @@ def average_scores(network_input, tf_weight_dict, rids):
             network_output[query_indx, :] = network_input[query_indx, :]
         else:
             ## use allowed tfs 
-            allowed_rids = np.intersect1d(tf_weight_dict[query_tf].keys(), rids)
+            allowed_rids = np.intersect1d(list(tf_weight_dict[query_tf].keys()), rids)
             if len(allowed_rids) == 0:
                 network_output[query_indx, :] = network_input[query_indx, :]
             else:
