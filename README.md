@@ -67,18 +67,3 @@ rule prepare_resources:
 Kang, Y, et al. NetProphet 2.0: Mapping Transcription Factor Networks by Exploiting Scalable Data Resources. Bioinformatics 2018;34(2):249–257.
 
 Haynes, B.C., et al. Mapping functional transcription factor networks from gene expression data. Genome research 2013;23(8):1319-1328.
-
-Chipman, H.A., George, E.I. and McCulloch, R.E. BART: Bayesian additive regression trees. 2010:266-298.
-
-Köster, Johannes and Rahmann, Sven. “Snakemake - A scalable bioinformatics workflow engine”. Bioinformatics 2012.
-
-Elemento, O., Slonim, N. and Tavazoie, S. A universal framework for regulatory element discovery across all genomes and data types. Mol Cell 2007;28(2):337-350.
-
-Grant, C.E., Bailey, T.L. and Noble, W.S. FIMO: scanning for occurrences of a given motif. Bioinformatics (Oxford, England) 2011;27(7):1017-1018.
-
-Smyth GK. 2005. "Limma: Linear models for microarray data". Bioinformatics and computational biology solutions using R and Bioconductor (ed. Gentleman R, et al.), pp. 397–420. Springer, New York.
-
-Efron, Bradley; Hastie, Trevor; Johnstone, Iain; Tibshirani, Robert. Least angle regression. Ann. Statist. 32 (2004), no. 2, 407--499.
-
-Yu, Hao. "Rmpi: parallel statistical computing in R." R News 2.2 (2002): 10-14.
-
