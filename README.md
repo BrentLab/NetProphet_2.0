@@ -12,18 +12,18 @@ Please find the details on installation, data preparation, code execution, and r
 
 ### Basic Usage
 
-Let's run NetProphet in parallel processing mode on your HPC cluster:
+Let's run NetProphet in parallel processing mode on your HPC cluster with email notification:
 
 ```
-conda activate np2
-sbatch [--mail-type=END,FAIL --mail-user=<your_email>] NetProphet2 -f <config_file>
+$ conda activate np2
+$ sbatch --mail-type=END,FAIL --mail-user=<your_email> NetProphet2 -f config.json
 ```
 
 Alternatively, run serial processing mode on your MacOS or Linux desktop:
 
 ```
-conda activate np2
-./NetProphet2 -s -f <config_file>
+$ conda activate np2
+$ ./NetProphet2 -s -f config.json
 ```
 
 After execution, you will see following messages that monitor the progress:
@@ -59,7 +59,7 @@ rule prepare_resources:
 12 of 12 steps (100%) done
 ```
 
-> NOTE: The resource data provided is used for mapping a Yeast subnetwork. Visit http://mblab.wustl.edu/software.html for the resources for mapping whole TF network in yeast and fruit fly.
+> NOTE: The example input data provided in this repo is used for mapping a small Yeast subnetwork. Visit http://mblab.wustl.edu/software.html for the resources for mapping whole TF network in yeast and fruit fly.
 
 
 ### References
