@@ -153,7 +153,7 @@ export PATH=${NetProphetDir}:$PATH
 if [ $parallelizedFlag -eq 1 ]
 then
 	## Running in the parallelized fashion
-	sbatch --mem-per-cpu=40G run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
+	run_netprophet_parallel_init.sh ${targetExpressionFile} ${regulatorExpressionFile} ${allowedMatrixFile} ${perturbationMatrixFile} ${differentialExpressionMatrixFile} ${microarrayFlag} ${nonGlobalShrinkageFlag} ${lassoAdjMtrFileName} ${combinedModelAdjMtrFileName} ${outputDirectory} ${combinedModelAdjLstFileName} ${regulatorGeneNamesFile} ${targetGeneNamesFile}
 else
 	## Running in the sequential fashion
 	cd $NetProphetDir

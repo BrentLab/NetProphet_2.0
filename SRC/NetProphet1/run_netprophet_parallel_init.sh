@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH -n 11
-#SBATCH --cpus-per-task=2
-#SBATCH -D ./SRC/NetProphet1/
-#SBATCH -o ../../LOG/map_netprophet1_network_%A.out
-#SBATCH -e ../../LOG/map_netprophet1_network_%A.err
+##SBATCH -n 11
+##SBATCH --cpus-per-task=2
+##SBATCH -D ./SRC/NetProphet1/
+##SBATCH -o ../../LOG/map_netprophet1_network_%A.out
+##SBATCH -e ../../LOG/map_netprophet1_network_%A.err
 
 targetExpressionFile=${1}
 regulatorExpressionFile=${2}
@@ -20,7 +20,8 @@ regulatorGeneNamesFileName=${12}
 targetGeneNamesFileName=${13}
 
 
-module load R/3.2.1
+#module load R/3.2.1
+module load R/3.4.3
 module load openmpi/1.8.8
 
 echo "calling mpirun now, SLURM_NTASKS=${SLURM_NTASKS}"

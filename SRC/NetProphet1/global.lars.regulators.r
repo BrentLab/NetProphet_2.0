@@ -167,7 +167,7 @@ lars.multi <- function(tdata,rdata,pert,prior,allowed)
 			sample.indx <- sample.indx-1; 
 		}
 		#####
-		lars.paths[[i]] <- list(beta=results.lars$beta, mu=results.lars$mu, meanx=results.lars$meanx, C.Max=c(results.lars$C.Max,0))
+		lars.paths[[i]] <- list(beta=results.lars$beta, mu=results.lars$mu, meanx=results.lars$meanx, C.Max=c(results.lars$lambda,0))
 	}
 	cat("\n")
 

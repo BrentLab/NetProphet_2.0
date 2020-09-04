@@ -12,6 +12,8 @@ FN_FASTA=$2 		# promoter sequence file
 DIR_BINNED_EXPR=$3 	# directory of binned expression files
 LOG_FILE=$4
 
+
+
 read regulator < <( sed -n ${SLURM_ARRAY_TASK_ID}p $FN_REGULATORS )
 set -e
 

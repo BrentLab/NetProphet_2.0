@@ -52,7 +52,7 @@ def make_nonrepeat_conditions(conditions):
     for x in np.unique(np.array(non_unique_conds)):
         indx = np.where(conditions == x)[0]
         for i in range(len(indx)):
-            conditions[indx[i]] = conditions[indx[i]] +'_'+ str(i+1)
+            conditions[indx[i]] = str(conditions[indx[i]]) +'_'+ str(i+1)
     return conditions
 
 

@@ -13,4 +13,4 @@ de_component <- de_component / max(abs(de_component))
 combinedAdjMtr <- compute.model.average.new(lasso_component,de_component,c(3,1,1,1,1,2,0.1,0.01))
 
 # write.table(combinedAdjMtr,file.path(outputDirectory,combinedAdjMtrFileName),row.names=FALSE,col.names=FALSE,quote=FALSE,sep='\t')
-write.table(combinedAdjMtr,combinedAdjMtrFileName,row.names=FALSE,col.names=FALSE,quote=FALSE,sep='\t')
+write.table(combinedAdjMtr,paste(outputDirectory, combinedAdjMtrFileName, sep=''),row.names=FALSE,col.names=FALSE,quote=FALSE,sep='\t')

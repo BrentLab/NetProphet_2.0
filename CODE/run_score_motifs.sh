@@ -10,7 +10,7 @@ function score_motifs {
 			if [ -f $FN_TF_PWM/$regulator ]; then
 				fimo -o $OUT_FIMO/$regulator --thresh 5e-3 $FN_TF_PWM/$regulator $FN_PROMOTERS
 				sed ' 1d ' $OUT_FIMO/$regulator/fimo.txt | cut -f 1,2,7 > $OUT_FIMO/$regulator/temp.txt
-				ruby ./CODE/estimate_affinity.rb -i $OUT_FIMO/$regulator/temp.txt > $OUT_FIMO/${regulator}.summary
+				ruby /scratch/mblab/dabid/netprophet/code_netprophet2.1/CODE/estimate_affinity.rb -i $OUT_FIMO/$regulator/temp.txt > $OUT_FIMO/${regulator}.summary
 			else
 				printf "No motif inferred for %s\n" $regulator
 			fi
@@ -30,8 +30,8 @@ USE_SERIAL=$7
 
 ## Parse FIRE results
 printf "Parsing motif inference results ... "
-python CODE/parse_motif_summary.py -a True -i $MOTIFS_DIR -o $MOTIFS_LIST
-python CODE/convert_fire2meme.py -i $MOTIFS_LIST -o $OUTPUT_DIR/motif_inference/motifs_pfm/
+python /scratch/mblab/dabid/netprophet/code_netprophet2.1/CODE/parse_motif_summary.py -a True -i $MOTIFS_DIR -o $MOTIFS_LIST
+python /scratch/mblab/dabid/netprophet/code_netprophet2.1/CODE/convert_fire2meme.py -i $MOTIFS_LIST -o $OUTPUT_DIR/motif_inference/motifs_pfm/
 printf "DONE\n"
 
 ## Score FIRE motifs
@@ -42,9 +42,8 @@ printf "Score promoters using MEME-FIMO ... "
 if $USE_SERIAL; then
 	score_motifs $REGULATORS $OUTPUT_DIR/motif_inference/motifs_pfm/ $PROMOTERS $OUTPUT_DIR/motif_inference/motifs_score ${OUTPUT_DIR}/motif_inference/motif_scoring.log
 else
-	num_regulators=$( wc -l ${REGULATORS} | cut -d" " -f1 )
-	sbatch --array=1-${num_regulators}%48 CODE/score_motifs.sh $REGULATORS $OUTPUT_DIR/motif_inference/motifs_pfm/ $PROMOTERS $OUTPUT_DIR/motif_inference/motifs_score ${OUTPUT_DIR}/motif_inference/motif_scoring.log
+	/scratch/mblab/dabid/netprophet/code_netprophet2.1/CODE/score_motifs.sh $REGULATORS $OUTPUT_DIR/motif_inference/motifs_pfm/ $PROMOTERS $OUTPUT_DIR/motif_inference/motifs_score ${OUTPUT_DIR}/motif_inference/motif_scoring.log
 fi
 
 ## Check if all motifs are ready
-bash CODE/check_inference_status.sh ${OUTPUT_DIR}/motif_inference/motif_scoring.log $REGULATORS $FLAG
+#bash /scratch/mblab/dabid/netprophet/code_netprophet2.1/CODE/check_inference_status.sh ${OUTPUT_DIR}/motif_inference/motif_scoring.log $REGULATORS $FLAG

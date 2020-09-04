@@ -9,3 +9,6 @@ SRC/meme_4.9.1/
 OUTPUT/
 RESOURCES/tmp/
 LOG/
+old/
+SRC/R_pkgs/old/
+CODE/old/

@@ -36,11 +36,17 @@ def process_score(fi, fo, num_bin):
             line_split = line.split();
             dict_target[line_split[0]] = float(line_split[1])
     # sort dictionary based on score
-    dict_target_sorted = sorted(dict_target.iteritems(), key=operator.itemgetter(1))
+    dict_target_sorted = sorted(dict_target.items(), key=operator.itemgetter(1))
     dict_target_sorted.reverse()
 
     # get score intervals
-    max_score = dict_target_sorted[0][1]
+    #print(dict_target_sorted)
+    try:
+        max_score = dict_target_sorted[0][1]
+    except IndexError:
+        print('dict_target_sorted: ', dict_target_sorted)
+        exit()
+              
     min_score = dict_target_sorted[len(dict_target_sorted)-1][1]
     interval_score = (max_score-min_score)/(num_bin-1)
     

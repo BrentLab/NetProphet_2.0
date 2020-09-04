@@ -71,7 +71,7 @@ def get_tf_weights_multi_dbds(dir_dbd, dbd_cutoff, fn_conv):
     tf_weight_dict = {}
     for query_tf in tf_simscore_dict.keys():
         tf_weight_dict[query_tf] = {}
-        for paired_tf, scores in tf_simscore_dict[query_tf].iteritems():
+        for paired_tf, scores in tf_simscore_dict[query_tf].items():
             scores = scores[scores >= dbd_cutoff]
             if len(scores) > 0:
                 tf_weight_dict[query_tf][paired_tf] = sigmoid(max(scores))
@@ -97,7 +97,7 @@ def get_tf_weights(dir_dbd, dbd_cutoff):
     tf_weight_dict = {}
     for query_tf in tf_simscore_dict.keys():
         tf_weight_dict[query_tf] = {}
-        for paired_tf, score in tf_simscore_dict[query_tf].iteritems():
+        for paired_tf, score in tf_simscore_dict[query_tf].items():
             if score >= dbd_cutoff:
                 tf_weight_dict[query_tf][paired_tf] = sigmoid(score)
     return tf_weight_dict
@@ -116,12 +116,12 @@ def average_scores(network_input, tf_weight_dict, rids):
     # weighted average
     for query_tf in rids:
         query_indx = np.where(rids == query_tf)[0][0]
-        if (not query_tf in tf_weight_dict.keys()) or (len(tf_weight_dict[query_tf].keys()) < 2):
+        if ((not query_tf in tf_weight_dict.keys()) or (len(tf_weight_dict[query_tf].keys()) < 2)):
             ## unchanged score if query tf does not have other similar tfs
             network_output[query_indx, :] = network_input[query_indx, :]
         else:
-            ## use allowed tfs 
-            allowed_rids = np.intersect1d(tf_weight_dict[query_tf].keys(), rids)
+            # use allowed tfs 
+            allowed_rids = np.intersect1d(list(tf_weight_dict[query_tf].keys()), rids)
             if len(allowed_rids) == 0:
                 network_output[query_indx, :] = network_input[query_indx, :]
             else:

@@ -69,11 +69,14 @@ if $USE_SERIAL; then
 	snakemake --cores 2 --latency-wait 30 --nolock --configfile $CONFIG_FILE -s run_serial.Snakefile all
 else
 	echo -e "\e[1mRunning NetProphet2 in parallel fashion.\e[0m"
-	module load R/3.2.1
-	module load openmpi/1.8.8
-	module load python/2.7.15
-	module load py-numpy/1.16.2-python-2.7.15
-	module load py-scipy/1.2.1-python-2.7.15
-	snakemake --cores 2 --latency-wait 172800 --nolock --configfile $CONFIG_FILE -s run_parallel.Snakefile all
+	#module load R/3.2.1
+	#module load openmpi/1.8.8
+	#module load python/2.7.15
+	#module load py-numpy/1.16.2-python-2.7.15
+	#module load py-scipy/1.2.1-python-2.7.15
+	module load anaconda3/4.1.1
+        source activate np2
+        snakemake --cores 2 --latency-wait 172800 --nolock --configfile $CONFIG_FILE -s run_parallel.Snakefile all
+        source deactivate np2
 	# snakemake --cores 6 --latency-wait 172800 --nolock --configfile $CONFIG_FILE -s run_parallel_split.Snakefile all
 fi
