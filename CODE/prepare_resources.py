@@ -47,7 +47,7 @@ def write_tsv(fn, adjmtr, conds, genes):
 
 
 def make_nonrepeat_conditions(conditions):
-    conditions = np.array(conditions, dtype='|S500')
+    conditions = conditions.astype(str)
     non_unique_conds = [x for n, x in enumerate(conditions) if x in conditions[:n]]
     for x in np.unique(np.array(non_unique_conds)):
         indx = np.where(conditions == x)[0]
