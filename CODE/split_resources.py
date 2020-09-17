@@ -87,7 +87,7 @@ def main(argv):
                     ("tmp/data.pert.tsv", "c")]
 
     for filename, split_axis in files_splits:
-        print "... working on %s" % filename
+        print ("... working on " + str(filename))
         file_in = parsed.dir_resources + filename
         file_out_prefix = parsed.dir_resources +"/"+ filename if filename.startswith("tmp") else parsed.dir_resources +"tmp/"+ filename
         split_file(file_in, file_out_prefix, split_axis, parsed.n_split)
