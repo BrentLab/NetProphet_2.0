@@ -8,6 +8,7 @@ if (!require("abind")) try(install.packages("abind"));
 # if (!require("restorepoint")) try(install.packages("restorepoint")); ## deprecated
 
 getBartNetwork <- function(tgtLevel, tfLevel, regMat, unperturbedTfLevel, nBin = 3, ...) {
+    set.seed(747)
 	# use BART to generate a network structure prediction
 	# tgtLevel: training target expression levels, in foldchange with respect to wildtype
 	# tfLevel: training regulator expression levels, in foldchange with respect to wildtype, the log of which will be fed to BART

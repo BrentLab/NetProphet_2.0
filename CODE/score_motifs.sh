@@ -23,7 +23,7 @@ if [[ ! -z ${regulator} ]]; then
 	if [ -f $FN_TF_PWM/$regulator ]; then
 		${MEME_BIN}/fimo -o $OUT_FIMO/$regulator --thresh 5e-3 $FN_TF_PWM/$regulator $FN_PROMOTERS
 		sed ' 1d ' $OUT_FIMO/$regulator/fimo.txt | cut -f 1,2,7 > $OUT_FIMO/$regulator/temp.txt
-		ruby ../CODE/estimate_affinity.rb -i $OUT_FIMO/$regulator/temp.txt > $OUT_FIMO/${regulator}.summary
+		ruby /scratch/mblab/dabid/netprophet/code_netprophet2.1/CODE/estimate_affinity.rb -i $OUT_FIMO/$regulator/temp.txt > $OUT_FIMO/${regulator}.summary
 	else
 		printf "No motif inferred for %s\n" $regulator
 	fi

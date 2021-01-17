@@ -1,9 +1,4 @@
 #!/bin/bash
-#SBATCH -n 32
-#SBATCH --mem=20G
-#SBATCH -D ./LOG
-#SBATCH -e bart.err
-#SBATCH -o bart.out
 
 data_fc_expr=${1}
 pert_matrix=${2}
