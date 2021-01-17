@@ -5,7 +5,7 @@ p_lib = "/home/dabid/R/x86_64-pc-linux-gnu-library/3.4"
 # install lars library, tested for R 3.4.3
 install.packages(paste(p_src_code, "SRC/R_pkgs/lars_1.2.tar.gz", sep="")
                 , repos=NULL
-                , type=source
+                , type="source"
                 , lib=p_lib
                 )
  
