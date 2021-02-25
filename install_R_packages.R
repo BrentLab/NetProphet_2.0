@@ -10,6 +10,7 @@ install.packages(paste(p_src_code, "SRC/R_pkgs/lars_1.2.tar.gz", sep="")
                 )
  
 # isntall Rmpi ( the open mpi have to be installed or loaded)
+# note to be able to install it, you have to load openmpi
 R CMD INSTALL /scratch/mblab/dabid/netprophet/code_netprophet2.1/SRC/R_pkgs/Rmpi_0.6-3.tar.gz --configure-args="--with-Rmpi-include=/opt/apps/openmpi/1.8.8/include  --with-Rmpi-type=OPENMPI --with-Rmpi-libpath=/opt/apps/openmpi/1.8.8/lib/"
 
 # install Bayes trees

@@ -167,7 +167,7 @@ bartMultiresponse <- function(x.train, y.train, x.test = NULL, allowed, simplify
 		# 	if (!missing(saveTo) && !is.null(saveTo)) save(bartedList, file = saveTo);
 		# }
 	} else { # calculate with mpi
-		require("Rmpi");
+        require("Rmpi");
 		# try(Sys.setenv(OMPI_MCA_btl_tcp_if_include="eth0"));
 		if (mpi.comm.size(comm = mpiComm) == 0) { # initialize mpi comm if have not done so yet
 			if (missing(blockSize)) blockSize <- floor(sqrt(nResponse));
