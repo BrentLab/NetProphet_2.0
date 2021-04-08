@@ -1,0 +1,404 @@
+#!/bin/bash
+
+# ========================================================================= #
+# |                    **** USAGE OF NETPROPHET 2.1 ****                  | #      
+# ========================================================================= #
+usage(){
+cat << EOF
+    netprophet2.1 [options]
+    
+    INPUT arguments:
+    --p_in_target            : input file for list of target genes
+    --p_in_reg               : input file for list of regulators
+    --p_in_sample            : input file for list of sample (condition) ids
+    --p_in_expr_target       : input file for expression of target genes (target x sample)
+    --p_in_net_de            : input file for network of differential expression
+    --p_in_binding_event     : input file for binding events |REGULATOR|TARGET|
+    
+    NETPROPHET1 arguments:
+    --fname_net_np1          : name of generated network for netprophet1 (optional)
+    
+    NETPROPHET2 arguments:
+    --fname_net_bart         : name of generated network for bart (optional)
+    --fname_net_np2          : name of generated network for netprophet2 (optional)
+    --p_in_dbd_pids          : path of folder for DBD_PIDS
+    --p_in_promoter          : path of file for promoters
+    
+    OUTPUT arguments:
+    --p_out_dir              : path of output directory for results
+
+    SLURM arguments:
+    --p_out_logs             : output director for log files (.out & .err) for slurm runs
+EOF
+}
+
+
+# ========================================================================= #
+# |                  **** END USAGE OF NETPROPHET 2.1 ****                | #      
+# ========================================================================= #
+
+# general input
+data=""
+seed=747
+
+# pwm
+p_in_promoter="NONE"
+
+# smoothing
+p_in_dbd_pids="NONE"
+
+# LOGISTICS
+# p_src_code="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)/"
+
+# SLURM arguments
+mail_type=FAIL
+mail_user="NONE"
+flag_slurm="OFF"
+
+# SINGULARITY arguments
+flag_singularity="ON"
+p_singularity_img="NONE"
+p_singularity_bindpath="NONE"
+
+
+# initialize flags for specific components runs
+flag_run_np1="OFF"  # -n
+flag_run_bart="OFF"  # -b bart
+flag_run_combine="OFF"  # -c combine
+flag_run_pwm="OFF" # -m pwm
+flag_run_all="ON"  # -a to run all components
+
+
+
+# ========================================================================= #
+# |                         **** PARSE ARGUMENTS ****                     | #      
+# ========================================================================= #
+
+while getopts ":hpnbvwcismkya-:" OPTION
+do
+    case "${OPTION}" in
+    n)
+        flag_run_np1="ON"
+        flag_run_all="OFF"
+        ;;
+    b)
+        flag_run_bart="ON"
+        flag_run_all="OFF"
+        ;;
+    c)
+        flag_run_combine="ON"
+        flag_run_all="OFF"
+        ;;
+    m)
+        flag_run_pwm="ON"
+        flag_run_all="OFF"
+        ;;
+    k)
+        flag_run_combine_np1bart_pwm="ON"
+        flag_run_all="OFF"
+        ;;
+    a)
+        flag_run_all="ON"
+        ;;
+    h)
+        usage
+        exit 2
+        ;;
+    -)
+        case "${OPTARG}" in
+            # Input general param
+            p_in_expr_target)
+                p_in_expr_target="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            p_in_expr_reg)
+                p_in_expr_reg="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            
+            # Lasso
+            flag_global_shrinkage)
+                flag_global_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            flag_local_shrinkage)
+                flag_local_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            lasso_nbr_fold)
+                lasso_nbr_fold="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            flag_microarray)
+                flag_microarray="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            p_in_net_de)
+                p_in_net_de="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            p_in_binding_event)
+                p_in_binding_event="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            
+            # smoothing
+            p_in_dbd_pids)
+                p_in_dbd_pids="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+                
+            # pwm
+            p_in_promoter)
+                p_in_promoter="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            
+                
+            # Logistics
+            p_src_code)
+                p_src_code="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            seed)
+                seed="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            data)
+                data="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+                
+            # Output
+            p_out_dir)
+                p_out_dir="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+                
+            # SLURM
+            flag_slurm)
+                flag_slurm="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            mail_type)
+                mail_type="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            mail_user)
+                mail_user="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            p_out_dir_logs)
+                p_out_dir_logs="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+                  
+            # Singularity
+            flag_singularity)
+                    flag_singularity="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                  ;;
+            p_singularity_img)
+                p_singularity_img="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+              ;;
+            p_singularity_bindpath)
+                p_singularity_bindpath="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+              ;;
+            
+        esac;;
+    esac
+
+done
+
+# ========================================================================= #
+# |                       **** END PARSE ARGUMENTS ****                   | #      
+# ========================================================================= #
+
+
+mkdir -p ${p_out_dir}
+
+# ========================================================== #
+# |                **** Run NETPROPHET1 ***                | #
+# ========================================================== #
+job_id_np1=1    
+if [ ${flag_run_np1} == "ON" ] || [ ${flag_run_all} == "ON" ]
+then
+    cmd_run_np1=""
+    if [ ${flag_slurm} == "ON" ]
+    then
+        mkdir -p ${p_out_dir_logs}tmp/
+        cmd_run_np1+="sbatch \
+                       -o ${p_out_dir_logs}build_np1_%J.out \
+                       -e ${p_out_dir_logs}build_np1_%J.err \
+                       -J ${data}_np1 \
+                       --mail-type=${mail_type} \
+                       --mail-user=${mail_user} \
+                       -D ${p_out_dir_logs}tmp/ \
+                       -n 11 \
+                       -N 1 \
+                       --mem-per-cpu=10GB \
+                       --cpus-per-task=2 "
+    fi
+    cmd_run_np1+="${p_src_code}src/build_np1/workflow/build_net_np1_and_smooth.sh \
+                    --p_in_expr_target ${p_in_expr_target} \
+                    --p_in_expr_reg ${p_in_expr_reg} \
+                    --flag_global_shrinkage ${flag_global_shrinkage} \
+                    --flag_local_shrinkage ${flag_local_shrinkage} \
+                    --lasso_nbr_fold ${lasso_nbr_fold} \
+                    --flag_microarray ${flag_microarray} \
+                    --p_in_dbd_pids ${p_in_dbd_pids} \
+                    --p_in_net_de ${p_in_net_de} \
+                    --seed ${seed} \
+                    --p_out_dir ${p_out_dir} \
+                    --f_out_name_lasso net_lasso.tsv \
+                    --f_out_name_np1 net_np1.tsv \
+                    --f_out_name_np1_smoothed net_np1_smoothed.tsv \
+                    --p_src_code ${p_src_code} \
+                    --flag_slurm ${flag_slurm} \
+                    --flag_singularity ${flag_singularity} \
+                    --p_singularity_img ${p_singularity_img} \
+                    --p_singularity_bindpath ${p_singularity_bindpath}" 
+    
+    echo "run NP1.."
+    job_id_np1=$(echo $(eval ${cmd_run_np1}) | awk '{split($0, a, " "); print a[4]}')
+fi
+
+# ========================================================== #
+# |                    **** Run BART ****                  | #
+# ========================================================== #
+job_id_bart=1
+if [ ${flag_run_bart} == "ON" ] || [ ${flag_run_all} == "ON" ]
+then
+    cmd_run_bart=""
+    if [ ${flag_slurm} == "ON" ]; then
+        mkdir -p ${p_out_dir_logs}tmp/
+        cmd_run_bart+="sbatch \
+                       -o ${p_out_dir_logs}build_bart_%J.out \
+                       -e ${p_out_dir_logs}build_bart_%J.err \
+                       -J ${data}_bart \
+                       --mail-type=${mail_type} \
+                       --mail-user=${mail_user} \
+                       -n 20 \
+                       -N 1 \
+                       -D ${p_out_dir_logs}tmp/ \
+                       --mem=20GB "
+    fi
+    cmd_run_bart+="${p_src_code}src/build_bart/workflow/build_net_bart_and_smooth.sh \
+                    --p_in_expr_target ${p_in_expr_target} \
+                    --p_in_expr_reg ${p_in_expr_reg} \
+                    --p_in_dbd_pids ${p_in_dbd_pids} \
+                    --seed ${seed} \
+                    --p_out_dir ${p_out_dir} \
+                    --f_out_name_bart net_bart.tsv \
+                    --f_out_name_bart_smoothed net_bart_smoothed.tsv \
+                    --p_src_code ${p_src_code} \
+                    --flag_slurm ${flag_slurm} \
+                    --flag_singularity ${flag_singularity} \
+                    --p_singularity_img ${p_singularity_img} \
+                    --p_singularity_bindpath ${p_singularity_bindpath}" 
+    
+    echo "run BART.."
+    job_id_bart=$(echo $(eval ${cmd_run_bart}) | awk '{split($0, a, " "); print a[4]}')
+fi
+
+
+# ========================================================== #
+# |              **** Combine NP1 & BART ****              | #
+# ========================================================== #
+job_id_combine=1
+if [ ${flag_run_combine} == "ON" ] || [ ${flag_run_all} == "ON" ]
+then
+    if [ ${p_in_dbd_pids} != "NONE" ]; then
+        p_net_bart=${p_out_dir}net_bart_smoothed.tsv
+        p_net_np1=${p_out_dir}net_np1_smoothed.tsv
+    else
+        p_net_bart=${p_out_dir}net_bart.tsv
+        p_net_np1=${p_out_dir}net_np1.tsv
+    fi
+    
+    # combine np1 & bart
+    cmd_run_combine=""
+    if [ ${flag_slurm} == "ON" ]; then
+        mkdir -p ${p_out_dir_logs}tmp/
+        cmd_run_combine+="sbatch \
+                          -o ${p_out_dir_logs}combine_np1_bart_%J.out \
+                          -e ${p_out_dir_logs}combine_np1_bart_%J.err \
+                          --dependency=afterok:${job_id_np1}:${job_id_bart} \
+                          -J ${data}_combine_np1_bart \
+                           --mail-type=${mail_type} \
+                           --mail-user=${mail_user} "
+    fi
+    cmd_run_combine+="${p_src_code}src/combine_networks/wrapper/quantile_combine_networks.sh \
+                          ${p_net_np1} \
+                          ${p_net_bart} \
+                          ${p_out_dir}net_np1_bart.tsv \
+                          ${p_src_code} \
+                          ${flag_slurm} \
+                          ${flag_singularity} \
+                          ${p_singularity_img} \
+                          ${p_singularity_bindpath}"
+                 
+    echo "run combine NP1 & BART.."
+    job_id_combine=$(echo $(eval ${cmd_run_combine}) | awk '{split($0, a, " "); print a[4]}')
+    
+fi
+
+
+# ========================================================== #
+# |                    **** Run PWM ****                   | #
+# ========================================================== #
+job_id_pwm=1
+if [ ${flag_run_pwm} == "ON" ] || [ ${flag_run_all} == "ON" ]
+then
+    nbr_job_pwm=${nbr_job}
+    if [ ${flag_slurm} == "ON" ]; then
+        mkdir -p ${p_out_dir_logs}tmp/
+        nbr_job_pwm=40
+        cmd_run_pwm+="sbatch \
+                      -o ${p_out_dir_logs}build_pwm_%J.out \
+                      -e ${p_out_dir_logs}build_pwm_%J.err \
+                      -J ${data}_pwm \
+                      --mail-type=${mail_type} \
+                      --mail-user=${mail_user} \
+                      --nodes=1 \
+                      --ntasks=10 \
+                      --cpus-per-task=2 \
+                      -D ${p_out_dir_logs}tmp/ \
+                      --dependency=afterok:${job_id_combine} "
+    fi
+    cmd_run_pwm+="${p_src_code}src/build_pwm/workflow/build_net_pwm.sh \
+                 --p_in_net ${p_out_dir}net_bart.tsv \
+                 --p_in_promoter ${p_in_promoter} \
+                 --p_out_dir ${p_out_dir} \
+                 --f_out_name net_pwm.tsv \
+                 --flag_slurm ${flag_slurm} \
+                 --flag_singularity ${flag_singularity} \
+                 --p_singularity_img ${p_singularity_img} \
+                 --p_singularity_bindpath ${p_singularity_bindpath} \
+                 --p_src_code ${p_src_code} \
+                 --nbr_job ${nbr_job_pwm}"
+                 
+    echo "run PWM.."             
+    job_id_pwm=$(echo $(eval ${cmd_run_pwm}) | awk '{split($0, a, " "); print a[4]}')
+fi
+
+job_id_combine=1
+if [ ${flag_run_combine} == "ON" ] || [ ${flag_run_all} == "ON" ]
+then    
+    # combine np1_bart & pwm
+    if [ -f ${p_out_dir}"net_pwm.tsv" ] || [ ${flag_run_pwm} == "ON" ]
+    then
+        cmd_run_combine=""
+        if [ ${flag_slurm} == "ON" ]; then
+            mkdir -p ${p_out_dir_logs}tmp/
+            cmd_run_combine+="sbatch \
+                              -o ${p_out_dir_logs}combine_np1bart_pwm_%J.out \
+                              -e ${p_out_dir_logs}combine_np1bart_pwm_%J.err \
+                              --dependency=afterok:${job_id_pwm} \
+                              -J ${data}_combine_np1bart_pwm \
+                               --mail-type=${mail_type} \
+                               --mail-user=${mail_user} "
+        fi
+        
+        cmd_run_combine+="${p_src_code}src/combine_networks/workflow/combine_networks_and_smooth.sh \
+                              --p_in_net_np1_bart ${p_out_dir}net_np1_bart.tsv \
+                              --p_in_net_pwm ${p_out_dir}net_pwm.tsv \
+                              --p_in_dbd_pids ${p_in_dbd_pids} \
+                              --p_out_dir ${p_out_dir} \
+                              --f_out_name_np2 net_np2.tsv \
+                              --f_out_name_np2_smoothed net_np2_smoothed.tsv \
+                              --p_src_code ${p_src_code} \
+                              --flag_slurm ${flag_slurm} \
+                              --flag_singularity ${flag_singularity} \
+                              --p_singularity_img ${p_singularity_img} \
+                              --p_singularity_bindpath ${p_singularity_bindpath}"
+                                                         
+        echo "run combine NP1_BART & PWM.."
+        job_id_combine=$(echo $(eval ${cmd_run_combine}) | awk '{split($0, a, " "); print a[4]}')
+    fi
+fi
+
+
+
+
