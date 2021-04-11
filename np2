@@ -143,7 +143,10 @@ do
             p_in_binding_event)
                 p_in_binding_event="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
-            
+            # bart
+            bart_nbr_rmpi_slave)
+		bart_nbr_rmpi_slave="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
             # smoothing
             p_in_dbd_pids)
                 p_in_dbd_pids="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
