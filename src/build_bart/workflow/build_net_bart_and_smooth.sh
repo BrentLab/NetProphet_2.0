@@ -1,4 +1,4 @@
-#!/bin/bash
+\#!/bin/bash
 
 while getopts ":h-:" OPTION
 do
@@ -15,11 +15,8 @@ do
                 p_in_expr_reg)
                     p_in_expr_reg="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     ;;
-                flag_global_shrinkage)
-                    flag_global_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
-                    ;;
-                flag_local_shrinkage)
-                    flag_local_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                bart_nbr_rmpi_slave)
+                    nbr_rmpi_slave="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     ;;
                 seed)
                     seed="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
@@ -74,7 +71,8 @@ cmd_bart="${p_src_code}src/build_bart/wrapper/build_net_bart.sh \
         ${p_src_code} \
         ${flag_singularity} \
         ${p_singularity_img} \
-        ${p_singularity_bindpath}"
+        ${p_singularity_bindpath} \
+        ${nbr_rmpi_slave}"
     
 eval ${cmd_bart}
 

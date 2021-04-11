@@ -14,6 +14,14 @@ From: ubuntu:18.04
     export LC_ALL=C
  
 %post
+    export PATH=${PATH}:/home/opt/openmpi/bin:/home/packages/meme/bin:/home/packages/meme/libexec/meme-5.1.0:/home/packages/FIRE-1.1a/
+    export FIREDIR=/home/packages/FIRE-1.1a
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/home/opt/openmpi/lib
+    export R_LIBS_USER=${R_LIBS_USER}:/usr/local/lib/R/site-library
+    export LC_ALL=C
+
+    cp -r /home/NetProphet_2.0/packages /home/.
+    cp -r /home/NetProphet_2.0/toy_example /home/.
     # update OS
     apt-get update
     apt-get upgrade -y
@@ -29,6 +37,7 @@ From: ubuntu:18.04
     pip3 install scipy 
 
     # install Openmpi
+    apt-get install build-essential
     cd /home/packages
     tar -zxf openmpi-1.10.2.tar.gz
     cd openmpi-1.10.2
@@ -37,8 +46,16 @@ From: ubuntu:18.04
     make install
     
     # install R & R packages
+    # set noninteractive installation
+    export DEBIAN_FRONTEND=noninteractive
+    #install tzdata package
+    apt-get install -y tzdata
+    # set your timezone
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+    dpkg-reconfigure --frontend noninteractive tzdata
+
     apt-get install r-base -y
-    R --slave -e 'install.packages("Rmpi", configure.args=c("--with-Rmpi-include=/home/opt/openmpi/include/", "--with-Rmpi-libpath=/home/opt/openmpi/lib/", "--with-Rmpi-type=OPENMPI", "--with-mpi=/home/opt/openmpi"))'
+    # R --slave -e 'install.packages("Rmpi", configure.args=c("--with-Rmpi-include=/home/opt/openmpi/include/", "--with-Rmpi-libpath=/home/opt/openmpi/lib/", "--with-Rmpi-type=OPENMPI", "--with-mpi=/home/opt/openmpi"))'
     R --slave -e 'install.packages("fastDummies")'
     R --slave -e 'install.packages("optparse")'
     R --slave -e 'install.packages("doParallel")'
@@ -51,6 +68,7 @@ From: ubuntu:18.04
     R --slave -e 'install.packages("Matrix")'
     R --slave -e 'install.packages("abind")'
     R --slave -e 'install.packages("lars")'
+    R --slave -e 'install.packages("Rmpi", configure.args=c("--with-Rmpi-include=/home/opt/openmpi/include/", "--with-Rmpi-libpath=/home/opt/openmpi/lib/", "--with-Rmpi-type=OPENMPI", "--with-mpi=/home/opt/openmpi"))'
 
 
     # install FIRE
@@ -75,8 +93,6 @@ From: ubuntu:18.04
 %files
     NetProphet_2.0 /home/
     NetProphet_3.0 /home/
-    toy_example /home/
-    packages /home/
 
 # to build singularity container
 #sudo singularity build --sandbox s_np recipe.txt
@@ -84,3 +100,7 @@ From: ubuntu:18.04
 #sudo tar --hard-dereference -czf s_np.tar.gz s_np
 # decompree it
 #tar -xf s_np.tar.gz
+# package the container into .sif file
+sudo singularity build s_np.sif s_np
+singularity remote login SylabsCloud
+singularity push -U s_np.sif library://dabid/default/s_np

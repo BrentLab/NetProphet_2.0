@@ -12,6 +12,7 @@ p_src_code=${6}
 flag_singularity=${7}
 p_singularity_img=${8}
 p_singularity_bindpath=${9}
+nbr_rmpi_slave=${10}
 
 
 # =========================================================================== #
@@ -30,6 +31,7 @@ fi
 cmd+="Rscript --no-save --vanilla ${p_src_code}src/build_bart/code/build_net_bart.R \
      --p_in_expr_target ${p_in_expr_target} \
      --p_in_expr_reg ${p_in_expr_reg} \
+     --nbr_rmpi_slave ${nbr_rmpi_slave} \
      --fname_bart ${fname_bart} \
      --p_out_dir ${p_out_dir} \
      --flag_slurm ${flag_slurm} \

@@ -41,8 +41,18 @@ EOF
 data=""
 seed=747
 
+# lasso
+flag_global_shrinkage="OFF"
+flag_local_shrinkage="ON"
+flag_microarray="MICROARRAY"
+lasso_nbr_fold=10
+
+# bart
+bart_nbr_rmpi_slave=2
+
 # pwm
 p_in_promoter="NONE"
+
 
 # smoothing
 p_in_dbd_pids="NONE"
@@ -252,6 +262,7 @@ if [ ${flag_run_bart} == "ON" ] || [ ${flag_run_all} == "ON" ]
 then
     cmd_run_bart=""
     if [ ${flag_slurm} == "ON" ]; then
+        bart_nbr_rmpi_slave=20
         mkdir -p ${p_out_dir_logs}tmp/
         cmd_run_bart+="sbatch \
                        -o ${p_out_dir_logs}build_bart_%J.out \
@@ -259,7 +270,7 @@ then
                        -J ${data}_bart \
                        --mail-type=${mail_type} \
                        --mail-user=${mail_user} \
-                       -n 20 \
+                       -n ${bart_nbr_rmpi_slave} \
                        -N 1 \
                        -D ${p_out_dir_logs}tmp/ \
                        --mem=20GB "
@@ -272,6 +283,7 @@ then
                     --p_out_dir ${p_out_dir} \
                     --f_out_name_bart net_bart.tsv \
                     --f_out_name_bart_smoothed net_bart_smoothed.tsv \
+                    --nbr_rmpi_slave ${bart_nbr_rmpi_slave} \
                     --p_src_code ${p_src_code} \
                     --flag_slurm ${flag_slurm} \
                     --flag_singularity ${flag_singularity} \
