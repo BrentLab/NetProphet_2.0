@@ -42,15 +42,12 @@ generate_bart_net = function(p_in_expr_target
     # masking pertubed entries in response from training
     df_expr_target[df_perturbed] = NA
 
-    if (flag_slurm == "ON")
-    {
-        df_bart_net = getBartNetwork(tgtLevel=t(as.matrix(df_expr_target))
+    df_bart_net = getBartNetwork(tgtLevel=t(as.matrix(df_expr_target))
                                      , tfLevel=t(as.matrix(df_expr_reg))
                                      , regMat=df_allowed
                                      , mpiComm=1
                                      , blockSize=nbr_rmpi_slave
                                     )
-    }
     
     # if output directory doesn't exist, create it
     ifelse(!dir.exists(file.path(p_out_dir))

@@ -286,7 +286,7 @@ then
                     --p_out_dir ${p_out_dir} \
                     --f_out_name_bart net_bart.tsv \
                     --f_out_name_bart_smoothed net_bart_smoothed.tsv \
-                    --nbr_rmpi_slave ${bart_nbr_rmpi_slave} \
+                    --bart_nbr_rmpi_slave ${bart_nbr_rmpi_slave} \
                     --p_src_code ${p_src_code} \
                     --flag_slurm ${flag_slurm} \
                     --flag_singularity ${flag_singularity} \
