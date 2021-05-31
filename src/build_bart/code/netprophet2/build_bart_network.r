@@ -22,7 +22,7 @@ getBartNetwork <- function(tgtLevel, tfLevel, regMat, unperturbedTfLevel, nBin =
 	#		second dimension corresponds to the identity of the perturbed regulator they are responding to
 	#		third dimenison is the idenity of the responding target gene itself
 	# returns fields including those of bartExpr, with an additional field regScore which is the signed scores of regulation likelihood
-    set.seed(747)
+    
     # load libraries
     library("R.oo")
     library("Rmpi")
@@ -247,6 +247,7 @@ bartRobust <- function(x.train, y.train, x.test, simplify = FALSE, keepBartObj =
 	if (ncol(x) > nrow(x) - 1 && is.na(sigest)) sigest <- sd(y, na.rm = TRUE); # in case ncol(x) > nrow(x) - 1, sigest get manually specified here, otherwise bart would run into a bug and crash
 	if (length(unique(y)) > 1) { # only call bart if there's multiple values in training reponses y, otherwise bart would run into a bug and crash
 		defaultTest <- if (missing(x.test) || is.null(x.test)) matrix(0, 0, 0) else x.test;
+		set.seed(747)
 		result$barted <- bart(
 			x.train = x,
 			y.train = y,	

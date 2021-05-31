@@ -41,14 +41,32 @@ EOF
 data=""
 seed=747
 
-# pwm
+# LASSO
+flag_microarray="ON"
+lasso_nbr_fold=10
+flag_global_shrinkage="OFF"
+flag_local_shrinkage="ON"
+# LASSO SLURM
+lasso_slurm_mem=10GB
+lasso_slurm_nodes=1
+lasso_slurm_ntasks=10
+
+# BART SLURM
+bart_slurm_mem=20GB
+bart_slurm_nodes=1
+bart_slurm_ntasks=20
+
+# PWM
 p_in_promoter="NONE"
+# PWM SLURM
+pwm_slurm_nodes=1
+pwm_slurm_ntasks=10
 
 # smoothing
 p_in_dbd_pids="NONE"
 
 # LOGISTICS
-# p_src_code="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)/"
+p_src_code="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)/"
 
 # SLURM arguments
 mail_type=FAIL
@@ -65,6 +83,7 @@ p_singularity_bindpath="NONE"
 flag_run_np1="OFF"  # -n
 flag_run_bart="OFF"  # -b bart
 flag_run_combine="OFF"  # -c combine
+flag_run_combine_np1bart_pwm="OFF" # -k combine
 flag_run_pwm="OFF" # -m pwm
 flag_run_all="ON"  # -a to run all components
 
@@ -114,7 +133,7 @@ do
                 p_in_expr_reg="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
             
-            # Lasso
+            # LASSO
             flag_global_shrinkage)
                 flag_global_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
@@ -133,17 +152,43 @@ do
             p_in_binding_event)
                 p_in_binding_event="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
-            
+            # LASSO SLURM
+            lasso_slurm_mem)
+                lasso_slurm_mem="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            lasso_slurm_nodes)
+                lasso_slurm_nodes="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            lasso_slurm_ntasks)
+                lasso_slurm_ntasks="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+                
+            # BART SLURM
+            bart_slurm_mem)
+                bart_slurm_mem="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            bart_slurm_nodes)
+                bart_slurm_nodes="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            bart_slurm_ntasks)
+                bart_slurm_ntasks="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+                
             # smoothing
             p_in_dbd_pids)
                 p_in_dbd_pids="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
                 
-            # pwm
+            # PWM
             p_in_promoter)
                 p_in_promoter="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
-            
+            pwm_slurm_ntasks)
+                pwm_slurm_ntasks="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+            pwm_slurm_nodes)
+                pwm_slurm_nodes="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
                 
             # Logistics
             p_src_code)
@@ -215,10 +260,10 @@ then
                        --mail-type=${mail_type} \
                        --mail-user=${mail_user} \
                        -D ${p_out_dir_logs}tmp/ \
-                       -n 11 \
-                       -N 1 \
-                       --mem-per-cpu=10GB \
-                       --cpus-per-task=2 "
+                       --nodes=1-${lasso_slurm_nodes} \
+                       --ntasks=${lasso_slurm_ntasks} \
+                       --mem=${lasso_slurm_mem} \
+                       --cpus-per-task=3 "
     fi
     cmd_run_np1+="${p_src_code}src/build_np1/workflow/build_net_np1_and_smooth.sh \
                     --p_in_expr_target ${p_in_expr_target} \
@@ -259,14 +304,15 @@ then
                        -J ${data}_bart \
                        --mail-type=${mail_type} \
                        --mail-user=${mail_user} \
-                       -n 20 \
-                       -N 1 \
+                       --nodes=1-${bart_slurm_nodes} \
+                       --ntasks=${bart_slurm_ntasks} \
                        -D ${p_out_dir_logs}tmp/ \
-                       --mem=20GB "
+                       --mem=${bart_slurm_mem} "
     fi
     cmd_run_bart+="${p_src_code}src/build_bart/workflow/build_net_bart_and_smooth.sh \
                     --p_in_expr_target ${p_in_expr_target} \
                     --p_in_expr_reg ${p_in_expr_reg} \
+                    --nbr_rmpi_slaves ${bart_slurm_ntasks} \
                     --p_in_dbd_pids ${p_in_dbd_pids} \
                     --seed ${seed} \
                     --p_out_dir ${p_out_dir} \
@@ -306,8 +352,9 @@ then
                           -e ${p_out_dir_logs}combine_np1_bart_%J.err \
                           --dependency=afterok:${job_id_np1}:${job_id_bart} \
                           -J ${data}_combine_np1_bart \
-                           --mail-type=${mail_type} \
-                           --mail-user=${mail_user} "
+                          --mail-type=${mail_type} \
+                          --mail-user=${mail_user} \
+                          --mem=10GB "
     fi
     cmd_run_combine+="${p_src_code}src/combine_networks/wrapper/quantile_combine_networks.sh \
                           ${p_net_np1} \
@@ -341,14 +388,14 @@ then
                       -J ${data}_pwm \
                       --mail-type=${mail_type} \
                       --mail-user=${mail_user} \
-                      --nodes=1 \
-                      --ntasks=10 \
+                      --nodes=1-${pwm_slurm_nodes} \
+                      --ntasks=${pwm_slurm_ntasks} \
                       --cpus-per-task=2 \
                       -D ${p_out_dir_logs}tmp/ \
                       --dependency=afterok:${job_id_combine} "
     fi
     cmd_run_pwm+="${p_src_code}src/build_pwm/workflow/build_net_pwm.sh \
-                 --p_in_net ${p_out_dir}net_bart.tsv \
+                 --p_in_net ${p_out_dir}net_np1_bart.tsv \
                  --p_in_promoter ${p_in_promoter} \
                  --p_out_dir ${p_out_dir} \
                  --f_out_name net_pwm.tsv \
@@ -364,10 +411,10 @@ then
 fi
 
 job_id_combine=1
-if [ ${flag_run_combine} == "ON" ] || [ ${flag_run_all} == "ON" ]
+if [ ${flag_run_combine_np1bart_pwm} == "ON" ] || [ ${flag_run_all} == "ON" ]
 then    
     # combine np1_bart & pwm
-    if [ -f ${p_out_dir}"net_pwm.tsv" ] || [ ${flag_run_pwm} == "ON" ]
+    if [ -f ${p_out_dir}"net_pwm.tsv" ] || [ ${flag_run_pwm} == "ON" ] || [ ${flag_run_all} == "ON" ]
     then
         cmd_run_combine=""
         if [ ${flag_slurm} == "ON" ]; then
@@ -377,8 +424,9 @@ then
                               -e ${p_out_dir_logs}combine_np1bart_pwm_%J.err \
                               --dependency=afterok:${job_id_pwm} \
                               -J ${data}_combine_np1bart_pwm \
-                               --mail-type=${mail_type} \
-                               --mail-user=${mail_user} "
+                              --mail-type=${mail_type} \
+                              --mail-user=${mail_user} \
+                              --mem=150GB "
         fi
         
         cmd_run_combine+="${p_src_code}src/combine_networks/workflow/combine_networks_and_smooth.sh \
@@ -398,7 +446,3 @@ then
         job_id_combine=$(echo $(eval ${cmd_run_combine}) | awk '{split($0, a, " "); print a[4]}')
     fi
 fi
-
-
-
-

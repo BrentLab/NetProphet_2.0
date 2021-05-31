@@ -108,7 +108,6 @@ then
             --flag_slurm ${flag_slurm} \
             --flag_singularity ${flag_singularity} \
             --p_singularity_img ${p_singularity_img} \
-            --p_singularity_bindpath ${p_singularity_bindpath}"
-            
+            --p_singularity_bindpath ${p_singularity_bindpath}"      
     eval ${cmd_smooth}            
 fi

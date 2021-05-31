@@ -4,30 +4,15 @@ generate_bart_net = function(p_in_expr_target
                              , p_out_dir
                              , flag_slurm
                              , seed
-                             , p_src_code){
+                             , p_src_code
+                             , nbr_rmpi_slaves){
     
-    
-    # p_src_code='/scratch/mblab/dabid/netprophet/code_netprophet3.0/'
-    # p_in_expr_target='netprophet/net_debug/data/expr_target_indexed'
-    # p_in_expr_reg='netprophet/net_debug/data/expr_reg_indexed'
-    # fname_bart='net_bart.tsv'
-    # p_out_dir='netprophet/net_debug/'
-    # flag_slurm='ON'
-    # seed=747
-        
-    # read data from files 
-    # p_in_expr_target='netprophet/net_in/all_kem_expr_6112_1485_indexed'
-    # p_in_expr_reg='netprophet/net_in/all_kem_expr_reg_313_1485_indexed'
     
     df_expr_target = read.csv(p_in_expr_target, header=TRUE, row.names=1, sep="\t")
     df_expr_reg = read.csv(p_in_expr_reg, header=TRUE, row.names=1, sep="\t")
     l_in_target = as.factor(rownames(df_expr_target))
     l_in_reg = as.factor(rownames(df_expr_reg))
     l_in_sample = as.factor(colnames(df_expr_target))
-    # rownames(df_expr_target) = NULL
-    # colnames(df_expr_target) = NULL
-    # rownames(df_expr_reg) = NULL
-    # colnames(df_expr_reg) = NULL
     
     # transform from log(fc) to fc
     df_expr_target = 2**df_expr_target
@@ -47,7 +32,7 @@ generate_bart_net = function(p_in_expr_target
                                      , tfLevel=t(as.matrix(df_expr_reg))
                                      , regMat=df_allowed
                                      , mpiComm=1
-                                     , blockSize=20
+                                     , blockSize=nbr_rmpi_slaves
                                     )
     }
     
@@ -82,7 +67,9 @@ if (sys.nframe() == 0){
     seed = make_option(c("--seed"), type="integer", default=747, help="seed for reproducibility")
     p_src_code = make_option(c("--p_src_code"), type="character", default=NULL, help="path of the source code")
     
-    opt_parser = OptionParser(option_list=list(p_in_expr_target, p_in_expr_reg, fname_bart, p_out_dir, flag_slurm, seed, p_src_code))
+    nbr_rmpi_slaves = make_option(c("--nbr_rmpi_slaves"), type="integer", help="number of Rmpi slaves for allocation")
+    
+    opt_parser = OptionParser(option_list=list(p_in_expr_target, p_in_expr_reg, fname_bart, p_out_dir, flag_slurm, seed, p_src_code, nbr_rmpi_slaves))
     opt = parse_args(opt_parser)
     
     if (is.null(opt$p_in_expr_target) || is.null(opt$p_in_expr_reg) || is.null(opt$fname_bart) || is.null(opt$p_out_dir) || is.null(opt$flag_slurm) || is.null(opt$p_src_code)
@@ -103,5 +90,6 @@ if (sys.nframe() == 0){
                                   , flag_slurm=opt$flag_slurm
                                   , seed=opt$seed
                                   , p_src_code=opt$p_src_code
+                                  , nbr_rmpi_slaves=opt$nbr_rmpi_slaves
                                  ))
 }

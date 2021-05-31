@@ -50,17 +50,6 @@ do
             esac;;
     esac
 done
-
-
-echo "p_in_net_np1_bart: ${p_in_net_np1_bart}"
-echo "p_in_net_pwm: ${p_in_net_pwm}"
-echo "p_out_dir: ${p_out_dir}"
-echo "f_out_name_np2: ${f_out_name_np2}"
-echo "p_src_code: ${p_src_code}"
-echo "flag_slurm: ${flag_slurm}"
-echo "flag_singularity: ${flag_singularity}"
-echo "p_singularity_img: ${p_singularity_img}"
-echo "p_singularity_bindpath: ${p_singularity_bindpath}"
                  
 cmd_combine="${p_src_code}src/combine_networks/wrapper/combine_networks.sh \
                  ${p_in_net_np1_bart} \

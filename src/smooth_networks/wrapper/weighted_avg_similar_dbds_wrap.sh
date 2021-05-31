@@ -54,11 +54,10 @@ if [ ${flag_singularity} == "ON" ]; then
     export SINGULARITY_BINDPATH=${p_singularity_bindpath}
     cmd+="singularity exec ${p_singularity_img} "
 elif [ ${flag_singularity} == "OFF" ]; then
-    if [ ${flag_slurm} == "ON" ] 
-    then 
+    if [ ${flag_slurm} == "ON" ]; then 
         source ${p_src_code}src/helper/load_modules.sh
         source activate np2
-        ls -l ${SLURM_SUBMIT_DIR}np2/bin > /dev/null
+        ls -l ${CONDA_PREFIX}/bin > /dev/null
     fi
     
 fi

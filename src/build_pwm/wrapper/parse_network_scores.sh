@@ -38,8 +38,8 @@ if [ ${flag_singularity} == "ON" ]; then
 elif [ ${flag_singularity} == "OFF" ]; then
     if [ ${flag_slurm} == "ON" ]; then
         source ${p_src_code}src/helper/load_modules.sh
-        source activate np3
-        ls -l ${SLURM_SUBMIT_DIR}np3/bin > /dev/null
+        source activate np2
+        ls -l ${CONDA_PREFIX}/bin > /dev/null
     fi
 fi
 
@@ -51,5 +51,5 @@ cmd+="python3 ${p_src_code}src/build_pwm/code/netprophet2/parse_network_scores.p
 eval ${cmd}  
 
 if [ ${flag_singularity} == "OFF" ] && [ ${flag_slurm} == "ON" ]; then
-    source deactivate np3
+    source deactivate np2
 fi

@@ -27,6 +27,9 @@ do
                 p_in_dbd_pids)
                     p_in_dbd_pids="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     ;;
+                nbr_rmpi_slaves)
+                    nbr_rmpi_slaves="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                    ;;
                     
                 # Output
                 p_out_dir)
@@ -74,7 +77,8 @@ cmd_bart="${p_src_code}src/build_bart/wrapper/build_net_bart.sh \
         ${p_src_code} \
         ${flag_singularity} \
         ${p_singularity_img} \
-        ${p_singularity_bindpath}"
+        ${p_singularity_bindpath} \
+        ${nbr_rmpi_slaves}"
     
 eval ${cmd_bart}
 
