@@ -5,7 +5,11 @@ generate_bart_net = function(p_in_expr_target
                              , flag_slurm
                              , seed
                              , p_src_code
+<<<<<<< HEAD
                              , nbr_rmpi_slaves){
+=======
+                             , nbr_rmpi_slave){
+>>>>>>> e78cf4fb5e7d9a5729830a717ed8451f16430db8
     
     
     df_expr_target = read.csv(p_in_expr_target, header=TRUE, row.names=1, sep="\t")
@@ -26,15 +30,16 @@ generate_bart_net = function(p_in_expr_target
     # masking pertubed entries in response from training
     df_expr_target[df_perturbed] = NA
 
-    if (flag_slurm == "ON")
-    {
-        df_bart_net = getBartNetwork(tgtLevel=t(as.matrix(df_expr_target))
+    df_bart_net = getBartNetwork(tgtLevel=t(as.matrix(df_expr_target))
                                      , tfLevel=t(as.matrix(df_expr_reg))
                                      , regMat=df_allowed
                                      , mpiComm=1
+<<<<<<< HEAD
                                      , blockSize=nbr_rmpi_slaves
+=======
+                                     , blockSize=nbr_rmpi_slave
+>>>>>>> e78cf4fb5e7d9a5729830a717ed8451f16430db8
                                     )
-    }
     
     # if output directory doesn't exist, create it
     ifelse(!dir.exists(file.path(p_out_dir))
@@ -66,10 +71,11 @@ if (sys.nframe() == 0){
     flag_slurm = make_option(c("--flag_slurm"), type="character", default="OFF", help="ON or OFF for MPI run")
     seed = make_option(c("--seed"), type="integer", default=747, help="seed for reproducibility")
     p_src_code = make_option(c("--p_src_code"), type="character", default=NULL, help="path of the source code")
-    
     nbr_rmpi_slaves = make_option(c("--nbr_rmpi_slaves"), type="integer", help="number of Rmpi slaves for allocation")
     
     opt_parser = OptionParser(option_list=list(p_in_expr_target, p_in_expr_reg, fname_bart, p_out_dir, flag_slurm, seed, p_src_code, nbr_rmpi_slaves))
+    opt_parser = OptionParser(option_list=list(p_in_expr_target, p_in_expr_reg, fname_bart, p_out_dir, flag_slurm, seed, p_src_code, nbr_rmpi_slave))
+
     opt = parse_args(opt_parser)
     
     if (is.null(opt$p_in_expr_target) || is.null(opt$p_in_expr_reg) || is.null(opt$fname_bart) || is.null(opt$p_out_dir) || is.null(opt$flag_slurm) || is.null(opt$p_src_code)
@@ -90,6 +96,10 @@ if (sys.nframe() == 0){
                                   , flag_slurm=opt$flag_slurm
                                   , seed=opt$seed
                                   , p_src_code=opt$p_src_code
+<<<<<<< HEAD
                                   , nbr_rmpi_slaves=opt$nbr_rmpi_slaves
+=======
+                                  , nbr_rmpi_slave=opt$nbr_rmpi_slave
+>>>>>>> e78cf4fb5e7d9a5729830a717ed8451f16430db8
                                  ))
 }

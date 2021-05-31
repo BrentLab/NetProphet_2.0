@@ -15,11 +15,8 @@ do
                 p_in_expr_reg)
                     p_in_expr_reg="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     ;;
-                flag_global_shrinkage)
-                    flag_global_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
-                    ;;
-                flag_local_shrinkage)
-                    flag_local_shrinkage="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                bart_nbr_rmpi_slave)
+                    nbr_rmpi_slave="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     ;;
                 seed)
                     seed="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))

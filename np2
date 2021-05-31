@@ -41,6 +41,7 @@ EOF
 data=""
 seed=747
 
+<<<<<<< HEAD
 # LASSO
 flag_microarray="ON"
 lasso_nbr_fold=10
@@ -57,10 +58,23 @@ bart_slurm_nodes=1
 bart_slurm_ntasks=20
 
 # PWM
+=======
+# lasso
+flag_global_shrinkage="OFF"
+flag_local_shrinkage="ON"
+flag_microarray="MICROARRAY"
+lasso_nbr_fold=10
+
+# bart
+bart_nbr_rmpi_slave=2
+
+# pwm
+>>>>>>> e78cf4fb5e7d9a5729830a717ed8451f16430db8
 p_in_promoter="NONE"
 # PWM SLURM
 pwm_slurm_nodes=1
 pwm_slurm_ntasks=10
+
 
 # smoothing
 p_in_dbd_pids="NONE"
@@ -152,6 +166,7 @@ do
             p_in_binding_event)
                 p_in_binding_event="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
+<<<<<<< HEAD
             # LASSO SLURM
             lasso_slurm_mem)
                 lasso_slurm_mem="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
@@ -174,6 +189,12 @@ do
                 bart_slurm_ntasks="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                 ;;
                 
+=======
+            # bart
+            bart_nbr_rmpi_slave)
+		bart_nbr_rmpi_slave="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                ;;
+>>>>>>> e78cf4fb5e7d9a5729830a717ed8451f16430db8
             # smoothing
             p_in_dbd_pids)
                 p_in_dbd_pids="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
@@ -297,6 +318,7 @@ if [ ${flag_run_bart} == "ON" ] || [ ${flag_run_all} == "ON" ]
 then
     cmd_run_bart=""
     if [ ${flag_slurm} == "ON" ]; then
+        bart_nbr_rmpi_slave=20
         mkdir -p ${p_out_dir_logs}tmp/
         cmd_run_bart+="sbatch \
                        -o ${p_out_dir_logs}build_bart_%J.out \
@@ -304,8 +326,13 @@ then
                        -J ${data}_bart \
                        --mail-type=${mail_type} \
                        --mail-user=${mail_user} \
+<<<<<<< HEAD
                        --nodes=1-${bart_slurm_nodes} \
                        --ntasks=${bart_slurm_ntasks} \
+=======
+                       -n ${bart_nbr_rmpi_slave} \
+                       -N 1 \
+>>>>>>> e78cf4fb5e7d9a5729830a717ed8451f16430db8
                        -D ${p_out_dir_logs}tmp/ \
                        --mem=${bart_slurm_mem} "
     fi
@@ -318,6 +345,7 @@ then
                     --p_out_dir ${p_out_dir} \
                     --f_out_name_bart net_bart.tsv \
                     --f_out_name_bart_smoothed net_bart_smoothed.tsv \
+                    --bart_nbr_rmpi_slave ${bart_nbr_rmpi_slave} \
                     --p_src_code ${p_src_code} \
                     --flag_slurm ${flag_slurm} \
                     --flag_singularity ${flag_singularity} \

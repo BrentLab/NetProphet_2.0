@@ -1,0 +1,106 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+    Singularity container for running netprophet packages
+    Brent Lab, Washington University in Saint Louis
+
+
+%environment
+    export PATH=${PATH}:/home/opt/openmpi/bin:/home/packages/meme/bin:/home/packages/meme/libexec/meme-5.1.0:/home/packages/FIRE-1.1a/
+    export FIREDIR=/home/packages/FIRE-1.1a
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/home/opt/openmpi/lib
+    export R_LIBS_USER=${R_LIBS_USER}:/usr/local/lib/R/site-library
+    export LC_ALL=C
+ 
+%post
+    export PATH=${PATH}:/home/opt/openmpi/bin:/home/packages/meme/bin:/home/packages/meme/libexec/meme-5.1.0:/home/packages/FIRE-1.1a/
+    export FIREDIR=/home/packages/FIRE-1.1a
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/home/opt/openmpi/lib
+    export R_LIBS_USER=${R_LIBS_USER}:/usr/local/lib/R/site-library
+    export LC_ALL=C
+
+    cp -r /home/NetProphet_2.0/packages /home/.
+    cp -r /home/NetProphet_2.0/toy_example /home/.
+    # update OS
+    apt-get update
+    apt-get upgrade -y
+    
+    # install ruby
+    apt-get install ruby -y
+ 
+    # install python
+    apt-get install python3.6 -y
+    apt install python3-pip -y
+    pip3 install pandas
+    pip3 install numpy
+    pip3 install scipy 
+
+    # install Openmpi
+    apt-get install build-essential
+    cd /home/packages
+    tar -zxf openmpi-1.10.2.tar.gz
+    cd openmpi-1.10.2
+    ./configure --prefix=/home/opt/openmpi
+    make
+    make install
+    
+    # install R & R packages
+    # set noninteractive installation
+    export DEBIAN_FRONTEND=noninteractive
+    #install tzdata package
+    apt-get install -y tzdata
+    # set your timezone
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+    apt-get install r-base -y
+    # R --slave -e 'install.packages("Rmpi", configure.args=c("--with-Rmpi-include=/home/opt/openmpi/include/", "--with-Rmpi-libpath=/home/opt/openmpi/lib/", "--with-Rmpi-type=OPENMPI", "--with-mpi=/home/opt/openmpi"))'
+    R --slave -e 'install.packages("fastDummies")'
+    R --slave -e 'install.packages("optparse")'
+    R --slave -e 'install.packages("doParallel")'
+    R --slave -e 'install.packages("/home/packages/glmnet_2.0-18.tar.gz", type="source", repos=NULL)'
+    R --slave -e 'install.packages("e1071")'
+    R --slave -e 'install.packages("R.oo")'
+    R --slave -e 'install.packages("BayesTree")'
+    R --slave -e 'install.packages("stats")'
+    R --slave -e 'install.packages("matrixStats")'
+    R --slave -e 'install.packages("Matrix")'
+    R --slave -e 'install.packages("abind")'
+    R --slave -e 'install.packages("lars")'
+    R --slave -e 'install.packages("Rmpi", configure.args=c("--with-Rmpi-include=/home/opt/openmpi/include/", "--with-Rmpi-libpath=/home/opt/openmpi/lib/", "--with-Rmpi-type=OPENMPI", "--with-mpi=/home/opt/openmpi"))'
+
+
+    # install FIRE
+    cd /home/packages/
+    unzip -q FIRE-1.1a.zip
+    cd FIRE-1.1a/
+    chmod 775 configure
+    ./configure
+    make
+    chmod +x fire.pl
+
+    
+    # install MEME
+    cd /home/packages/
+    mkdir -p meme
+    tar zxf meme-5.1.0.tar.gz
+    cd meme-5.1.0
+    ./configure --prefix=/home/packages/meme --with-url=http://meme-suite.org/ --enable-build-libxslt
+    make
+    make install
+
+%files
+    NetProphet_2.0 /home/
+    NetProphet_3.0 /home/
+
+# to build singularity container
+#sudo singularity build --sandbox s_np recipe.txt
+# compress it
+#sudo tar --hard-dereference -czf s_np.tar.gz s_np
+# decompree it
+#tar -xf s_np.tar.gz
+# package the container into .sif file
+sudo singularity build s_np.sif s_np
+singularity remote login SylabsCloud
+singularity push -U s_np.sif library://dabid/default/s_np
